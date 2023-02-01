@@ -29,38 +29,61 @@ def calculate_partition_count(
     sample_count = 0
 
     if input_format == "files":
-        keys, text_files, image_files, metadata_files = folder_to_keys(
-            input_dataset,
-            enable_text=enable_text,
-            enable_image=enable_image,
-            enable_metadata=enable_metadata,
-        )
-        if text_files is None or len(text_files) == 0:
-            enable_text = False
-        if image_files is None or len(image_files) == 0:
-            enable_image = False
-        if metadata_files is None or len(metadata_files) == 0:
-            enable_metadata = False
-        keys, text_files, image_files, metadata_files = folder_to_keys(
-            input_dataset,
-            enable_text=enable_text,
-            enable_image=enable_image,
-            enable_metadata=enable_metadata,
-        )
-        sample_count = len(keys)
+        #keys, text_files, image_files, metadata_files = folder_to_keys(
+        #    input_dataset,
+        #    enable_text=enable_text,
+        #    enable_image=enable_image,
+        #    enable_metadata=enable_metadata,
+        #)
+        #if text_files is None or len(text_files) == 0:
+        #    enable_text = False
+        #if image_files is None or len(image_files) == 0:
+        #    enable_image = False
+        #if metadata_files is None or len(metadata_files) == 0:
+        #    enable_metadata = False
+        #keys, text_files, image_files, metadata_files = folder_to_keys(
+        #    input_dataset,
+        #    enable_text=enable_text,
+        #    enable_image=enable_image,
+        #    enable_metadata=enable_metadata,
+        #)
+        #sample_count = len(keys)
+
+        dataset_len = len(input_dataset)
+        if dataset_len > 1:
+            output_partition_count = dataset_len
+            print("Take number of dataset folders as output partition for multiple dataset folders: {}" \
+                .format(dataset_len))
+        else:
+            keys, text_files, image_files, metadata_files = folder_to_keys(
+                input_dataset,
+                enable_text=enable_text,
+                enable_image=enable_image,
+                enable_metadata=enable_metadata,
+                )
+            sample_count = len(keys)
+            output_partition_count = math.ceil(sample_count / write_batch_size)
+            print("Output partition count: {}, total sample: {}, write batch size: {}" \
+                .format(output_partition_count, sample_count, write_batch_size))
     elif input_format == "webdataset":
         sample_count = len(input_dataset) * wds_number_file_per_input_file
+        if sample_count == 0:
+            print("no sample found")
+            return None
+        else:
+            print(f"The number of samples has been estimated to be {sample_count}")
+        output_partition_count = math.ceil(sample_count / write_batch_size)
     else:
         print("Unsupported input_format")
         return None
 
-    if sample_count == 0:
-        print("no sample found")
-        return None
-    else:
-        print(f"The number of samples has been estimated to be {sample_count}")
+    #if sample_count == 0:
+    #    print("no sample found")
+    #    return None
+    #else:
+    #    print(f"The number of samples has been estimated to be {sample_count}")
 
-    output_partition_count = math.ceil(sample_count / write_batch_size)
+    #output_partition_count = math.ceil(sample_count / write_batch_size)
 
     return output_partition_count, enable_text, enable_image, enable_metadata
 

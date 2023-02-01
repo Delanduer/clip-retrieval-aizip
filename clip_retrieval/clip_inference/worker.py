@@ -18,6 +18,7 @@ from clip_retrieval.clip_inference.logger import LoggerWriter
 from clip_retrieval.clip_inference.reader import FilesReader, WebdatasetReader
 from clip_retrieval.load_clip import load_clip
 
+import datetime
 
 def worker(
     tasks,
@@ -40,15 +41,17 @@ def worker(
     clip_cache_path=None,
 ):
     """Start a worker"""
-    print("Starting the worker", flush=True)
+    print("--------------Starting the worker-------------", flush=True)
 
     # check for brace expansion
     if input_format == "webdataset" and not isinstance(input_dataset, list):
         input_dataset = list(braceexpand(input_dataset))
 
-    print(f"dataset is {len(input_dataset)}", flush=True)
-
-    def reader_builder(sampler):
+    len_dataset = len(input_dataset)
+    print("Total number of tasks: {}\nTotal number of partitions: {}\nTotal number of datasets: {}" \
+        .format(len(tasks), output_partition_count, len_dataset))
+    
+    def reader_builder(sampler, dataset):
         _, preprocess = load_clip(
             clip_model=clip_model, use_jit=use_jit, warmup_batch_size=batch_size, clip_cache_path=clip_cache_path
         )
@@ -56,7 +59,8 @@ def worker(
             return FilesReader(
                 sampler,
                 preprocess,
-                input_dataset,
+                #input_dataset,
+                dataset,
                 batch_size,
                 num_prepro_workers,
                 enable_text=enable_text,
@@ -115,11 +119,20 @@ def worker(
         writer_builder=writer_builder,
         logger_builder=logger_builder,
         output_partition_count=output_partition_count,
+        num_dataset=len_dataset,
     )
 
+    task_start = datetime.now()
     for task in tasks:
+        print("------------------------------")
         print(f"Starting work on task {task}", flush=True)
-        runner(task)
+        if len_dataset == 1:
+            runner(task, input_dataset[0])
+        else:
+            runner(task, input_dataset[task])
+    task_end = datetime.now()
+    print("-----------------------------")
+    print("All tasks finished in {}".format(task, task_end - task_start))
 
 
 if __name__ == "__main__":
