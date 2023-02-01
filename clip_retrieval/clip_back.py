@@ -39,6 +39,8 @@ from clip_retrieval.ivf_metadata_ordering import (
 )
 from dataclasses import dataclass
 
+from datetime import datetime
+import time
 
 LOGGER = logging.getLogger(__name__)
 
@@ -239,6 +241,7 @@ class KnnService(Resource):
                     image_features = clip_resource.model.encode_image(prepro)
                 image_features /= image_features.norm(dim=-1, keepdim=True)
                 query = image_features.cpu().to(torch.float32).detach().numpy()
+                # print("Compute-Query returns query with shape: {}".format(query.shape))
         elif embedding_input is not None:
             query = np.expand_dims(np.array(embedding_input).astype("float32"), 0)
 
@@ -336,7 +339,7 @@ class KnnService(Resource):
         return to_remove
 
     def knn_search(
-        self, query, modality, num_result_ids, clip_resource, deduplicate, use_safety_model, use_violence_detector
+        self, queries, modality, num_result_ids, clip_resource, deduplicate, use_safety_model, use_violence_detector
     ):
         """compute the knn search"""
 
@@ -346,6 +349,7 @@ class KnnService(Resource):
             ivf_old_to_new_mapping = clip_resource.ivf_old_to_new_mapping
 
         index = image_index if modality == "image" else text_index
+        #print("knn search index: {}".format(index))
 
         with KNN_INDEX_TIME.time():
             if clip_resource.metadata_is_ordered_by_ivf:
@@ -354,54 +358,65 @@ class KnnService(Resource):
                     nprobe = math.ceil(num_result_ids / 3000)
                     params = faiss.ParameterSpace()
                     params.set_index_parameters(index, f"nprobe={nprobe},efSearch={nprobe*2},ht={2048}")
-            distances, indices, embeddings = index.search_and_reconstruct(query, num_result_ids)
+            distances, indices, embeddings = index.search_and_reconstruct(queries, num_result_ids)
             if clip_resource.metadata_is_ordered_by_ivf:
-                results = np.take(ivf_old_to_new_mapping, indices[0])
+                for idx, _ in enumerate(indices):
+                    results[idx] = np.take(ivf_old_to_new_mapping, indices[idx])
             else:
-                results = indices[0]
+                results = indices
             if clip_resource.metadata_is_ordered_by_ivf:
                 params = faiss.ParameterSpace()
                 params.set_index_parameters(index, f"nprobe={previous_nprobe},efSearch={previous_nprobe*2},ht={2048}")
-        nb_results = np.where(results == -1)[0]
+        
+            distance_outputs = []
+            indices_outputs = []
+            #print("knn search raw distances length : {}, indicies length: {}".format(len(distances), len(indices)))
+            for idx in range(0, len(results)):
+                #print("Looping in raw search results for index: {}".format(idx))
+                nb_results = np.where(results[idx] == -1)[0]
 
-        if len(nb_results) > 0:
-            nb_results = nb_results[0]
-        else:
-            nb_results = len(results)
-        result_indices = results[:nb_results]
-        result_distances = distances[0][:nb_results]
-        result_embeddings = embeddings[0][:nb_results]
-        result_embeddings = normalized(result_embeddings)
-        local_indices_to_remove = self.post_filter(
-            clip_resource.safety_model,
-            result_embeddings,
-            deduplicate,
-            use_safety_model,
-            use_violence_detector,
-            clip_resource.violence_detector,
-        )
-        indices_to_remove = set()
-        for local_index in local_indices_to_remove:
-            indices_to_remove.add(result_indices[local_index])
-        indices = []
-        distances = []
-        for ind, distance in zip(result_indices, result_distances):
-            if ind not in indices_to_remove:
-                indices_to_remove.add(ind)
-                indices.append(ind)
-                distances.append(distance)
+            if len(nb_results) > 0:
+                nb_results = nb_results[0]
+            else:
+                nb_results = len(results[idx])
+            result_indices = results[idx][:nb_results]
+            result_distances = distances[idx][:nb_results]
+            result_embeddings = embeddings[idx][:nb_results]
+            result_embeddings = normalized(result_embeddings)
+            local_indices_to_remove = self.post_filter(
+                clip_resource.safety_model,
+                result_embeddings,
+                deduplicate,
+                use_safety_model,
+                use_violence_detector,
+                clip_resource.violence_detector,
+            )
+            indices_to_remove = set()
+            #print("knn search to be removed indices len: {}".format(len(local_indices_to_remove)))
+            for local_index in local_indices_to_remove:
+                indices_to_remove.add(result_indices[local_index])
+            indices_filtered = []
+            distances_filtered = []
+            for ind, distance in zip(result_indices, result_distances):
+                if ind not in indices_to_remove:
+                    indices_to_remove.add(ind)
+                    indices_filtered.append(ind)
+                    distances_filtered.append(distance)
+            distance_outputs.append(distances_filtered)
+            indices_outputs.append(indices_filtered)
 
-        return distances, indices
+        return distance_outputs, indices_outputs
 
     def map_to_metadata(self, indices, distances, num_images, metadata_provider, columns_to_return):
         """map the indices to the metadata"""
-
+        #print("Num of imgs for meta data: {}".format(num_images))
         results = []
         with METADATA_GET_TIME.time():
             metas = metadata_provider.get(indices[:num_images], columns_to_return)
         for key, (d, i) in enumerate(zip(distances, indices)):
             output = {}
             meta = None if key + 1 > len(metas) else metas[key]
+            print("Meta for image with id {}:{}".format(i.item(), meta))
             convert_metadata_to_base64(meta)
             if meta is not None:
                 output.update(meta_to_dict(meta))
@@ -410,6 +425,121 @@ class KnnService(Resource):
             results.append(output)
 
         return results
+
+    def create_img_list(self, folder_path):
+        """use base64 to encode images from given folder, accepted format .jpg, .png"""
+        import base64
+        encoded_img_list = []
+        img_format = ["jpg", "png"]
+        if not os.path.isdir(folder_path):
+            print("The folder path does not exist")
+            return encoded_img_list
+        else:
+            for file in os.listdir(folder_path):
+                filename = os.fsdecode(file)
+                file_path = os.path.join(folder_path, filename)
+                #print("file: {0}, filename: {1}".format(file, file_path))  ## use for debug
+                if filename.rsplit(".",1)[1] in img_format:
+                    with open(file_path, "rb") as img:
+                        encoded_img = base64.b64encode(img.read())
+                        encoded_img_list.append(encoded_img)
+        return encoded_img_list
+
+    def multi_img_query(
+        self,
+        image_folder=None,
+        model=None,
+        modality="image",
+        num_images=100,
+        num_result_ids=100,
+        indice_name=None,
+        deduplicate=True
+    ):
+        """implement the querying functionality of the knn service: from text and image to nearest neighbors"""
+        start_knn_query = time.perf_counter()
+
+        if indice_name is None:
+            indice_name = next(iter(self.clip_resources.keys()))
+            print("use first key of indices as default: {0}".format(indice_name))
+
+        clip_resource = self.clip_resources[indice_name]
+
+        """check model, drop is unknown"""
+        #print(model)
+        if model == "ViT-B/32":
+            queries = np.empty([1, 512])
+        elif model == "ViT-L/64":
+            queries = np.empty([1, 768])
+        else:
+            print("model unknown")
+            return []
+
+        """check input image folder"""
+        image_input_list = self.create_img_list(image_folder)
+
+        """compute the query embedding"""
+        if image_input_list is None:
+            print("Empty img input list, check input folder.")
+            return []
+        elif len(image_input_list)==1:
+            print("Only one image detected, use single query instead.")
+            return self.query(
+                image_input=image_input_list[0],
+                modality=modality,
+                num_images=num_images,
+                num_result_ids=num_result_ids,
+                indice_name=indice_name,
+                deduplicate=deduplicate
+                )
+        else:
+            import torch  # pylint: disable=import-outside-toplevel
+            import clip  # pylint: disable=import-outside-toplevel
+            for idx, image_input in enumerate(image_input_list):
+                binary_data = base64.b64decode(image_input)
+                img_data = BytesIO(binary_data)
+
+                with IMAGE_PREPRO_TIME.time():
+                    img = Image.open(img_data)
+                    prepro = clip_resource.preprocess(img).unsqueeze(0).to(clip_resource.device)
+                with IMAGE_CLIP_INFERENCE_TIME.time():
+                    with torch.no_grad():
+                        image_features = clip_resource.model.encode_image(prepro)
+                image_features /= image_features.norm(dim=-1, keepdim=True)
+                query = image_features.cpu().detach().numpy().astype("float32")
+                #print("Compute Query outputs query with shape: {0}".format(query.shape))
+
+                if idx==0:
+                    queries = query
+                else:
+                    queries = np.append(queries, query, axis=0)
+
+            print("Shape of query: {0}".format(queries.shape))
+                
+            distances_arr, indices_arr = self.knn_search(
+                queries,
+                modality=modality,
+                num_result_ids=num_result_ids,
+                clip_resource=clip_resource,
+                deduplicate=deduplicate,
+                use_safety_model=False,
+                use_violence_detector=False,
+            )
+
+            results_arr = []
+            for idx in range(0, len(distances_arr)):
+                if len(distances_arr[idx]) == 0 or len(indices_arr[idx]) == 0:
+                    results_arr.append([])
+                    print("For idx: {0} in raw search there is either no distance or no index returned.".format(idx))
+                else:
+                    results = self.map_to_metadata(
+                        indices_arr[idx], distances_arr[idx], num_images, clip_resource.metadata_provider, clip_resource.columns_to_return
+                    )
+                    results_arr.append(results) 
+                    #print("len of result: {0} for index {1} in final results arry".format(len(results), idx))
+
+            end_knn_query = time.perf_counter()
+            LOGGER.info(f'Total duration for query: {end_knn_query-start_knn_query}')
+            return results_arr
 
     def query(
         self,
@@ -429,14 +559,14 @@ class KnnService(Resource):
         aesthetic_weight=None,
     ):
         """implement the querying functionality of the knn service: from text and image to nearest neighbors"""
-
+        knn_query_start = time.perf_counter()
         if text_input is None and image_input is None and image_url_input is None and embedding_input is None:
             raise ValueError("must fill one of text, image and image url input")
         if indice_name is None:
             indice_name = next(iter(self.clip_resources.keys()))
 
         clip_resource = self.clip_resources[indice_name]
-
+        #print("clip resource load for name {0}".format(indice_name))
         query = self.compute_query(
             clip_resource=clip_resource,
             text_input=text_input,
@@ -458,9 +588,12 @@ class KnnService(Resource):
         )
         if len(distances) == 0:
             return []
+        #print("len of distance: {0}, len of indices: {1}".format(len(distances), len(indices)))
         results = self.map_to_metadata(
-            indices, distances, num_images, clip_resource.metadata_provider, clip_resource.columns_to_return
+            indices[0], distances[0], num_images, clip_resource.metadata_provider, clip_resource.columns_to_return
         )
+        knn_query_end = time.perf_counter()
+        LOGGER.info(f'Total duration for query: {knn_query_end-knn_query_start}')
 
         return results
 
@@ -521,13 +654,14 @@ class ParquetMetadataProvider:
         self.metadata_df = pd.concat(
             pd.read_parquet(parquet_file) for parquet_file in sorted(data_dir.glob("*.parquet"))
         )
+        #print("Metadata-df of Parquet init: {0}".format(self.metadata_df))
 
     def get(self, ids, cols=None):
         if cols is None:
             cols = self.metadata_df.columns.tolist()
         else:
             cols = list(set(self.metadata_df.columns.tolist()) & set(cols))
-
+            #print("return cols of parquet meta data: {0}".format(cols))
         return [self.metadata_df[i : (i + 1)][cols].to_dict(orient="records")[0] for i in ids]
 
 
@@ -617,9 +751,11 @@ def load_metadata_provider(
     parquet_folder = indice_folder + "/metadata"
     ivf_old_to_new_mapping = None
     if use_arrow:
+        #print("Use-Arrow enabled")
         mmap_folder = parquet_folder
         metadata_provider = ArrowMetadataProvider(mmap_folder)
     elif enable_hdf5:
+        #print("Enable-hdf5 and do not use arrow.")
         hdf5_path = None
         if reorder_metadata_by_ivf_index:
             hdf5_path = indice_folder + "/metadata_reordered.hdf5"
@@ -643,6 +779,7 @@ def load_metadata_provider(
                 parquet_to_hdf5(parquet_folder, hdf5_path, columns_to_return)
         metadata_provider = Hdf5MetadataProvider(hdf5_path)
     else:
+        #print("Use-arrow disabled and hdf5 disabled.")
         metadata_provider = ParquetMetadataProvider(parquet_folder)
 
     return metadata_provider, ivf_old_to_new_mapping
@@ -859,17 +996,21 @@ def load_clip_index(clip_options):
     import torch  # pylint: disable=import-outside-toplevel
     from clip_retrieval.load_clip import load_clip, get_tokenizer  # pylint: disable=import-outside-toplevel
 
+    #start_time = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
     device = "cuda" if torch.cuda.is_available() else "cpu"
+    #load_clip_start = time.perf_counter()
     model, preprocess = load_clip(clip_options.clip_model, use_jit=clip_options.use_jit, device=device)
-
+    #load_clip_end = time.perf_counter()
     tokenizer = get_tokenizer(clip_options.clip_model)
-
+    #load_mclip_start = time.perf_counter()
     if clip_options.enable_mclip_option:
         model_txt_mclip = load_mclip(clip_options.clip_model)
     else:
         model_txt_mclip = None
-
+    #load_clip_end = time.perf_counter()
+    #safety_model_start = time.perf_counter()
     safety_model = load_safety_model(clip_options.clip_model) if clip_options.provide_safety_model else None
+    #safety_model_end = time.perf_counter()    
     violence_detector = (
         load_violence_detector(clip_options.clip_model) if clip_options.provide_violence_detector else None
     )
@@ -936,13 +1077,16 @@ def load_clip_indices(
     for name, indice_value in indices.items():
         # if indice_folder is a string
         if isinstance(indice_value, str):
+            #print("Indice_value is str: {}".format(indice_value))
             clip_options = dict_to_clip_options({"indice_folder": indice_value}, clip_options)
         elif isinstance(indice_value, dict):
+            #print("Indice_value is dict")
             clip_options = dict_to_clip_options(indice_value, clip_options)
         else:
             raise ValueError("Unknown type for indice_folder")
         clip_resources[name] = load_clip_index(clip_options)
-
+        #print("Name {0} add to clip resources".format(name))
+    #print("Clip option: {0}".format(clip_options))
     return clip_resources
 
 
