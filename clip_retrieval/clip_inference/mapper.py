@@ -12,6 +12,14 @@ def normalized(a, axis=-1, order=2):
     l2[l2 == 0] = 1
     return a / np.expand_dims(l2, axis)
 
+class ClipModuleWrapper(torch.nn.Module):
+    def __init__(self, model):
+        super(ClipModuleWrapper, self).__init__()
+        self.model = model
+    
+    def forward(self, batch):
+        return self.model.encode_image(batch)
+
 
 class ClipMapper:
     """transforms images and texts into clip embeddings"""
@@ -36,8 +44,11 @@ class ClipMapper:
         model, _ = load_clip(
             clip_model=clip_model, use_jit=use_jit, warmup_batch_size=warmup_batch_size, clip_cache_path=clip_cache_path
         )
-        self.model_img = model.encode_image
+
+        #self.model_img = model.encode_image
+        self.model_img = torch.nn.DataParallel(ClipModuleWrapper(model)) # Parallize GPU
         self.model_txt = model.encode_text
+        
         if use_mclip:
             print("\nLoading MCLIP model for text embedding\n")
             mclip = SentenceTransformer(mclip_model)
