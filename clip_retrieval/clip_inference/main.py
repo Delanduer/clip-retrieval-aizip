@@ -56,7 +56,7 @@ def calculate_partition_count(
                 .format(dataset_len))
         else:
             keys, text_files, image_files, metadata_files = folder_to_keys(
-                input_dataset,
+                input_dataset[0],
                 enable_text=enable_text,
                 enable_image=enable_image,
                 enable_metadata=enable_metadata,
@@ -99,7 +99,8 @@ def main(
     enable_text=True,
     enable_image=True,
     enable_metadata=False,
-    write_batch_size=10**6,
+    #write_batch_size=10**6,
+    write_batch_size=10**4,
     wds_image_key="jpg",
     wds_caption_key="txt",
     clip_model="ViT-B/32",
