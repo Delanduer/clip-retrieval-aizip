@@ -18,7 +18,7 @@ from clip_retrieval.clip_inference.logger import LoggerWriter
 from clip_retrieval.clip_inference.reader import FilesReader, WebdatasetReader
 from clip_retrieval.load_clip import load_clip
 
-import datetime
+from datetime import datetime
 
 def worker(
     tasks,
