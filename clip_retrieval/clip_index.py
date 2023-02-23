@@ -4,7 +4,7 @@ import fire
 import os
 from distutils.dir_util import copy_tree
 import logging
-
+from datetime import datetime
 
 LOGGER = logging.getLogger(__name__)
 
@@ -21,6 +21,7 @@ def quantize(emb_folder, index_folder, index_name, max_index_memory_usage, curre
                 f"embedding path exist, building index {index_name}"
                 f"using embeddings {emb_folder} ; saving in {index_folder}"
             )
+            build_start = datetime.now()
             build_index(
                 embeddings=emb_folder,
                 index_path=index_folder + "/" + index_name + ".index",
@@ -29,6 +30,8 @@ def quantize(emb_folder, index_folder, index_name, max_index_memory_usage, curre
                 current_memory_available=current_memory_available,
                 nb_cores=nb_cores,
             )
+            build_end = datetime.now()
+            print("Total duration for building index of {}: {}".format(index_name, build_end-build_start))
             LOGGER.debug(f"index {index_name} done")
     except Exception as e:  # pylint: disable=broad-except
         LOGGER.exception(f"index {index_name} failed")
