@@ -1,0 +1,25 @@
+Total number of subfolders detected: 8 in parent folder: /nfs/ssd2/data/laion400m
+First subfolder: /nfs/ssd2/data/laion400m/laion400m-data-02-img/
+Total number of subfolders detected: 1294 in parent folder: /nfs/ssd2/data/laion400m/laion400m-data-02-img/i02
+First subfolder: /nfs/ssd2/data/laion400m/laion400m-data-02-img/i02/01019/
+Total number of subfolders detected: 1294 in parent folder: /nfs/ssd2/data/laion400m/laion400m-data-01-img/i01
+First subfolder: /nfs/ssd2/data/laion400m/laion400m-data-01-img/i01/01019/
+Total number of subfolders detected: 1342 in parent folder: /nfs/ssd2/data/laion400m/laion400m-data-03-img/i03
+First subfolder: /nfs/ssd2/data/laion400m/laion400m-data-03-img/i03/01019/
+Total number of subfolders detected: 1294 in parent folder: /nfs/ssd2/data/laion400m/laion400m-data-00-img/i00
+First subfolder: /nfs/ssd2/data/laion400m/laion400m-data-00-img/i00/01019/
+Take number of dataset folders as output partition for multiple dataset folders: 3
+--------------Starting the worker-------------
+Total number of tasks: 3
+Total number of partitions: 3
+Total number of datasets: 3
+------------------------------
+Starting work on task 0
+warming up with batch size 1024 on cuda
+done warming up in 14.929465770721436s
+------------------------------
+Starting work on task 1
+------------------------------
+Starting work on task 2
+ sample_per_sec 27 ; sample_count 1024  sample_per_sec 24 ; sample_count 1024  sample_per_sec 21 ; sample_count 1024  sample_per_sec 39 ; sample_count 2048  sample_per_sec 90 ; sample_count 5120  sample_per_sec 132 ; sample_count 8192  sample_per_sec 142 ; sample_count 9532  sample_per_sec 132 ; sample_count 9532  sample_per_sec 124 ; sample_count 9532  sample_per_sec 129 ; sample_count 10556  sample_per_sec 156 ; sample_count 13628  sample_per_sec 181 ; sample_count 16700  sample_per_sec 172 ; sample_count 16700  sample_per_sec 187 ; sample_count 19079  sample_per_sec 178 ; sample_count 19079  sample_per_sec 170 ; sample_count 19079  sample_per_sec 171 ; sample_count 20103  sample_per_sec 190 ; sample_count 23175  sample_per_sec 206 ; sample_count 26247  sample_per_sec 218 ; sample_count 28649 -----------------------------
+All tasks (total 2) finished in 0:02:38.218770

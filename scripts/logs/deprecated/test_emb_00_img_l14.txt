@@ -1,0 +1,7 @@
+Output partition count: 1, total sample: 9538, write batch size: 10000
+--------------Starting the worker-------------
+Total number of tasks: 1
+Total number of partitions: 1
+Total number of datasets: 1
+------------------------------
+Starting work on task 0

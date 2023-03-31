@@ -1,21 +1,45 @@
 import os
 from clip_retrieval.clip_inference.main import main
 
-def getsubfolderlist(parent_folder):
-    print("Parent folder: {}".format(parent_folder))
+def getfirstlvlsubfolderlist(parent_folder):
     from glob import glob
     subfolders = glob(parent_folder + "/*/", recursive=True)
-    print("Total number of subfolders detected: {}\nFirst subfolder: {}".format(len(subfolders),subfolders[0]))
+    print("Total number of subfolders detected: {} in parent folder: {}\nFirst subfolder: {}".format(len(subfolders),parent_folder, subfolders[0]))
     return subfolders
 
+def getfoldersfrompattern(path_list, pattern):
+    if len(path_list) < 1:
+        print("Error: given path list is empty for extract folder with pattern.")
+    else:
+        output_list = []
+        for path in path_list:
+            subfolders = getfirstlvlsubfolderlist(path)
+            for subfolder in subfolders:
+                if pattern in subfolder:
+                    output_list.append(subfolder)
+        return output_list
 
-def callinference():
+def getimgfolders(path_list):
+    if len(path_list) < 1:
+        print("Error: given path list is empty for getting img folders.")
+        return []
+    else:
+        output_list = []
+        for path in path_list:
+            loowest_name = path.rsplit("/", 2)[1]
+            if lowest_name == []:
+                print("Error when extracting lowest path name for: {}".format(path))
+                continue
+            else:
+                img_idx = lowest_name.rsplit("-", 2)[1]
+                new_path = os.path.join(path, "i"+img_idx)
+                output_list.extend(getfirstlvlsubfolderlist(new_path))
+        return output_list
+
+def callinference(input_datasets, output_folder):
     main(
-        #input_dataset=["/home/junjie/git/clip-retrieval/notebook/cat_test/multiple/", "/home/junjie/git/clip-retrieval/notebook/cat_test/multiple_1/"],
-        input_dataset=getsubfolderlist("/nfs/ssd4/data/laion400m/i24"),
-        #input_dataset=["/ssd/mlrom/Data/coco2017/val2017", "/ssd/mlrom/Data/coco2017/train2017", "/ssd/mlrom/Data/vww/all2014"],
-        #input_dataset=["/ssd/mlrom/Data/vww/all2014"],
-        output_folder="/home/junjie/test/multitaskgpupara/emb_laioni24_l14_b1024_700",
+        input_dataset=input_datasets,
+        output_folder=output_folder,
         batch_size=1024,  # 768 causes CUDA memoray error
         #clip_model="ViT-B/32",   #ViT-B/32, ViT-L/14
         clip_model="ViT-L/14",
@@ -28,5 +52,18 @@ def callinference():
 
 
 if __name__  == "__main__":
-    #_ = getsubfolderlist("/nfs/ssd4/data/laion400m/i24")   # for testing
-    callinference()
+    #ssdlist=[]
+    #for i in range(2, 10):
+    #     ssd_path = "/nfs/ssd" + str(i) + "/data/laion400m"
+    #     ssdlist.append(ssd_path)
+    #print("Total number of ssd paths: {}".format(len(ssdlist)))
+    #parent_datasets = getfoldersfrompattern(ssdlist, "-img")
+    #datasets = getimgfolders(parent_datasets)
+    
+    task = "29"
+    print("Task for: {}".format(task))
+    imgfolder = "/nfs/ssd9/data/laion400m/laion400m-data-" + task + "-img/i" + task
+    datasets = getfirstlvlsubfolderlist(imgfolder)
+    output_folder = "/nfs/ssd14/projects/junjie/laion400mi" + task
+
+    callinference(datasets, output_folder)

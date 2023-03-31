@@ -3,9 +3,11 @@ from clip_retrieval.clip_index import clip_index
 
 def callindex():
     clip_index(
-        embeddings_folder="/home/junjie/test/multitaskgpupara/emb_coco_1024b_l14_writeb1000_trainvalvww2014",
-        index_folder="/home/junjie/test/multitaskgpupara/inx_coco_1024b_l14_writeb1000_trainvalvww2014",
-        copy_metadata=True
+        embeddings_folder="/nfs/ssd14/projects/junjie/laion400m",
+        index_folder="/nfs/ssd14/projects/junjie/laion400m_index",
+        copy_metadata=True,
+        max_index_memory_usage="16G",
+        current_memory_available="64G",
     )
 
 

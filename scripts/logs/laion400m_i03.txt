@@ -1,0 +1,2697 @@
+Task for: 03
+Total number of subfolders detected: 1342 in parent folder: /nfs/ssd2/data/laion400m/laion400m-data-03-img/i03
+First subfolder: /nfs/ssd2/data/laion400m/laion400m-data-03-img/i03/01019/
+Take number of dataset folders as output partition for multiple dataset folders: 1342
+--------------Starting the worker-------------
+Total number of tasks: 1342
+Total number of partitions: 1342
+Total number of datasets: 1342
+------------------------------
+Starting work on task 0
+warming up with batch size 1024 on cuda
+done warming up in 15.738834857940674s
+------------------------------
+Starting work on task 1
+------------------------------
+Starting work on task 2
+------------------------------
+Starting work on task 3
+------------------------------
+Starting work on task 4
+------------------------------
+Starting work on task 5
+------------------------------
+Starting work on task 6
+------------------------------
+Starting work on task 7
+------------------------------
+Starting work on task 8
+------------------------------
+Starting work on task 9
+------------------------------
+Starting work on task 10
+ sample_per_sec 24 ; sample_count 1024  sample_per_sec 21 ; sample_count 1024  sample_per_sec 19 ; sample_count 1024  sample_per_sec 35 ; sample_count 2048  sample_per_sec 82 ; sample_count 5120  sample_per_sec 122 ; sample_count 8192  sample_per_sec 133 ; sample_count 9583  sample_per_sec 124 ; sample_count 9583  sample_per_sec 116 ; sample_count 9583  sample_per_sec 121 ; sample_count 10607  sample_per_sec 148 ; sample_count 13679  sample_per_sec 172 ; sample_count 16751  sample_per_sec 187 ; sample_count 19130  sample_per_sec 178 ; sample_count 19130  sample_per_sec 170 ; sample_count 19130  sample_per_sec 163 ; sample_count 19130  sample_per_sec 164 ; sample_count 20154  sample_per_sec 182 ; sample_count 23226  sample_per_sec 198 ; sample_count 26298  sample_per_sec 209 ; sample_count 28695  sample_per_sec 201 ; sample_count 28695  sample_per_sec 194 ; sample_count 28695  sample_per_sec 188 ; sample_count 28695  sample_per_sec 188 ; sample_count 29719  sample_per_sec 202 ; sample_count 32791  sample_per_sec 214 ; sample_count 35863  sample_per_sec 208 ; sample_count 35863  sample_per_sec 215 ; sample_count 38257  sample_per_sec 209 ; sample_count 38257  sample_per_sec 204 ; sample_count 38257  sample_per_sec 204 ; sample_count 39281  sample_per_sec 214 ; sample_count 42353  sample_per_sec 209 ; sample_count 42353  sample_per_sec 219 ; sample_count 45425  sample_per_sec 224 ; sample_count 47786  sample_per_sec 219 ; sample_count 47786  sample_per_sec 214 ; sample_count 47786  sample_per_sec 214 ; sample_count 48810  sample_per_sec 209 ; sample_count 48810  sample_per_sec 218 ; sample_count 51882  sample_per_sec 226 ; sample_count 54954  sample_per_sec 231 ; sample_count 57327  sample_per_sec 226 ; sample_count 57327  sample_per_sec 222 ; sample_count 57327  sample_per_sec 218 ; sample_count 57327  sample_per_sec 214 ; sample_count 57327  sample_per_sec 214 ; sample_count 58351  sample_per_sec 221 ; sample_count 61423  sample_per_sec 228 ; sample_count 64495  sample_per_sec 232 ; sample_count 66868  sample_per_sec 228 ; sample_count 66868  sample_per_sec 224 ; sample_count 66868  sample_per_sec 220 ; sample_count 66868  sample_per_sec 220 ; sample_count 67892  sample_per_sec 226 ; sample_count 70964  sample_per_sec 233 ; sample_count 74036  sample_per_sec 229 ; sample_count 74036  sample_per_sec 233 ; sample_count 76390  sample_per_sec 229 ; sample_count 76390  sample_per_sec 226 ; sample_count 76390  sample_per_sec 225 ; sample_count 77414  sample_per_sec 231 ; sample_count 80486  sample_per_sec 228 ; sample_count 80486  sample_per_sec 233 ; sample_count 83558  sample_per_sec 236 ; sample_count 85959 logger error 'start_time'
+------------------------------
+Starting work on task 11
+------------------------------
+Starting work on task 12
+------------------------------
+Starting work on task 13
+------------------------------
+Starting work on task 14
+------------------------------
+Starting work on task 15
+------------------------------
+Starting work on task 16
+------------------------------
+Starting work on task 17
+------------------------------
+Starting work on task 18
+------------------------------
+Starting work on task 19
+------------------------------
+Starting work on task 20
+------------------------------
+Starting work on task 21
+------------------------------
+Starting work on task 22
+------------------------------
+Starting work on task 23
+------------------------------
+Starting work on task 24
+------------------------------
+Starting work on task 25
+------------------------------
+Starting work on task 26
+------------------------------
+Starting work on task 27
+------------------------------
+Starting work on task 28
+------------------------------
+Starting work on task 29
+------------------------------
+Starting work on task 30
+------------------------------
+Starting work on task 31
+------------------------------
+Starting work on task 32
+------------------------------
+Starting work on task 33
+------------------------------
+Starting work on task 34
+------------------------------
+Starting work on task 35
+------------------------------
+Starting work on task 36
+------------------------------
+Starting work on task 37
+------------------------------
+Starting work on task 38
+------------------------------
+Starting work on task 39
+------------------------------
+Starting work on task 40
+------------------------------
+Starting work on task 41
+------------------------------
+Starting work on task 42
+------------------------------
+Starting work on task 43
+------------------------------
+Starting work on task 44
+------------------------------
+Starting work on task 45
+------------------------------
+Starting work on task 46
+------------------------------
+Starting work on task 47
+------------------------------
+Starting work on task 48
+------------------------------
+Starting work on task 49
+------------------------------
+Starting work on task 50
+------------------------------
+Starting work on task 51
+------------------------------
+Starting work on task 52
+------------------------------
+Starting work on task 53
+------------------------------
+Starting work on task 54
+------------------------------
+Starting work on task 55
+------------------------------
+Starting work on task 56
+------------------------------
+Starting work on task 57
+------------------------------
+Starting work on task 58
+------------------------------
+Starting work on task 59
+------------------------------
+Starting work on task 60
+------------------------------
+Starting work on task 61
+------------------------------
+Starting work on task 62
+------------------------------
+Starting work on task 63
+------------------------------
+Starting work on task 64
+------------------------------
+Starting work on task 65
+------------------------------
+Starting work on task 66
+------------------------------
+Starting work on task 67
+------------------------------
+Starting work on task 68
+------------------------------
+Starting work on task 69
+------------------------------
+Starting work on task 70
+------------------------------
+Starting work on task 71
+------------------------------
+Starting work on task 72
+------------------------------
+Starting work on task 73
+------------------------------
+Starting work on task 74
+------------------------------
+Starting work on task 75
+------------------------------
+Starting work on task 76
+------------------------------
+Starting work on task 77
+------------------------------
+Starting work on task 78
+------------------------------
+Starting work on task 79
+------------------------------
+Starting work on task 80
+------------------------------
+Starting work on task 81
+------------------------------
+Starting work on task 82
+------------------------------
+Starting work on task 83
+------------------------------
+Starting work on task 84
+------------------------------
+Starting work on task 85
+------------------------------
+Starting work on task 86
+------------------------------
+Starting work on task 87
+------------------------------
+Starting work on task 88
+------------------------------
+Starting work on task 89
+------------------------------
+Starting work on task 90
+------------------------------
+Starting work on task 91
+------------------------------
+Starting work on task 92
+------------------------------
+Starting work on task 93
+------------------------------
+Starting work on task 94
+------------------------------
+Starting work on task 95
+------------------------------
+Starting work on task 96
+------------------------------
+Starting work on task 97
+------------------------------
+Starting work on task 98
+------------------------------
+Starting work on task 99
+------------------------------
+Starting work on task 100
+------------------------------
+Starting work on task 101
+------------------------------
+Starting work on task 102
+------------------------------
+Starting work on task 103
+------------------------------
+Starting work on task 104
+------------------------------
+Starting work on task 105
+------------------------------
+Starting work on task 106
+------------------------------
+Starting work on task 107
+------------------------------
+Starting work on task 108
+------------------------------
+Starting work on task 109
+------------------------------
+Starting work on task 110
+------------------------------
+Starting work on task 111
+------------------------------
+Starting work on task 112
+------------------------------
+Starting work on task 113
+------------------------------
+Starting work on task 114
+------------------------------
+Starting work on task 115
+------------------------------
+Starting work on task 116
+------------------------------
+Starting work on task 117
+------------------------------
+Starting work on task 118
+------------------------------
+Starting work on task 119
+------------------------------
+Starting work on task 120
+------------------------------
+Starting work on task 121
+------------------------------
+Starting work on task 122
+------------------------------
+Starting work on task 123
+------------------------------
+Starting work on task 124
+------------------------------
+Starting work on task 125
+------------------------------
+Starting work on task 126
+------------------------------
+Starting work on task 127
+------------------------------
+Starting work on task 128
+------------------------------
+Starting work on task 129
+------------------------------
+Starting work on task 130
+------------------------------
+Starting work on task 131
+------------------------------
+Starting work on task 132
+------------------------------
+Starting work on task 133
+------------------------------
+Starting work on task 134
+------------------------------
+Starting work on task 135
+------------------------------
+Starting work on task 136
+------------------------------
+Starting work on task 137
+------------------------------
+Starting work on task 138
+------------------------------
+Starting work on task 139
+------------------------------
+Starting work on task 140
+------------------------------
+Starting work on task 141
+------------------------------
+Starting work on task 142
+------------------------------
+Starting work on task 143
+------------------------------
+Starting work on task 144
+------------------------------
+Starting work on task 145
+------------------------------
+Starting work on task 146
+------------------------------
+Starting work on task 147
+------------------------------
+Starting work on task 148
+------------------------------
+Starting work on task 149
+------------------------------
+Starting work on task 150
+------------------------------
+Starting work on task 151
+------------------------------
+Starting work on task 152
+------------------------------
+Starting work on task 153
+------------------------------
+Starting work on task 154
+------------------------------
+Starting work on task 155
+------------------------------
+Starting work on task 156
+------------------------------
+Starting work on task 157
+------------------------------
+Starting work on task 158
+------------------------------
+Starting work on task 159
+------------------------------
+Starting work on task 160
+------------------------------
+Starting work on task 161
+------------------------------
+Starting work on task 162
+------------------------------
+Starting work on task 163
+------------------------------
+Starting work on task 164
+------------------------------
+Starting work on task 165
+------------------------------
+Starting work on task 166
+------------------------------
+Starting work on task 167
+------------------------------
+Starting work on task 168
+------------------------------
+Starting work on task 169
+------------------------------
+Starting work on task 170
+------------------------------
+Starting work on task 171
+------------------------------
+Starting work on task 172
+------------------------------
+Starting work on task 173
+------------------------------
+Starting work on task 174
+------------------------------
+Starting work on task 175
+------------------------------
+Starting work on task 176
+------------------------------
+Starting work on task 177
+------------------------------
+Starting work on task 178
+------------------------------
+Starting work on task 179
+------------------------------
+Starting work on task 180
+------------------------------
+Starting work on task 181
+------------------------------
+Starting work on task 182
+------------------------------
+Starting work on task 183
+------------------------------
+Starting work on task 184
+------------------------------
+Starting work on task 185
+------------------------------
+Starting work on task 186
+------------------------------
+Starting work on task 187
+------------------------------
+Starting work on task 188
+------------------------------
+Starting work on task 189
+------------------------------
+Starting work on task 190
+------------------------------
+Starting work on task 191
+------------------------------
+Starting work on task 192
+------------------------------
+Starting work on task 193
+------------------------------
+Starting work on task 194
+------------------------------
+Starting work on task 195
+------------------------------
+Starting work on task 196
+------------------------------
+Starting work on task 197
+------------------------------
+Starting work on task 198
+------------------------------
+Starting work on task 199
+------------------------------
+Starting work on task 200
+------------------------------
+Starting work on task 201
+------------------------------
+Starting work on task 202
+------------------------------
+Starting work on task 203
+------------------------------
+Starting work on task 204
+------------------------------
+Starting work on task 205
+------------------------------
+Starting work on task 206
+------------------------------
+Starting work on task 207
+------------------------------
+Starting work on task 208
+------------------------------
+Starting work on task 209
+------------------------------
+Starting work on task 210
+------------------------------
+Starting work on task 211
+------------------------------
+Starting work on task 212
+------------------------------
+Starting work on task 213
+------------------------------
+Starting work on task 214
+------------------------------
+Starting work on task 215
+------------------------------
+Starting work on task 216
+------------------------------
+Starting work on task 217
+------------------------------
+Starting work on task 218
+------------------------------
+Starting work on task 219
+------------------------------
+Starting work on task 220
+------------------------------
+Starting work on task 221
+------------------------------
+Starting work on task 222
+------------------------------
+Starting work on task 223
+------------------------------
+Starting work on task 224
+------------------------------
+Starting work on task 225
+------------------------------
+Starting work on task 226
+------------------------------
+Starting work on task 227
+------------------------------
+Starting work on task 228
+------------------------------
+Starting work on task 229
+------------------------------
+Starting work on task 230
+------------------------------
+Starting work on task 231
+------------------------------
+Starting work on task 232
+------------------------------
+Starting work on task 233
+------------------------------
+Starting work on task 234
+------------------------------
+Starting work on task 235
+------------------------------
+Starting work on task 236
+------------------------------
+Starting work on task 237
+------------------------------
+Starting work on task 238
+------------------------------
+Starting work on task 239
+------------------------------
+Starting work on task 240
+------------------------------
+Starting work on task 241
+------------------------------
+Starting work on task 242
+------------------------------
+Starting work on task 243
+------------------------------
+Starting work on task 244
+------------------------------
+Starting work on task 245
+------------------------------
+Starting work on task 246
+------------------------------
+Starting work on task 247
+------------------------------
+Starting work on task 248
+------------------------------
+Starting work on task 249
+------------------------------
+Starting work on task 250
+------------------------------
+Starting work on task 251
+------------------------------
+Starting work on task 252
+------------------------------
+Starting work on task 253
+------------------------------
+Starting work on task 254
+------------------------------
+Starting work on task 255
+------------------------------
+Starting work on task 256
+------------------------------
+Starting work on task 257
+------------------------------
+Starting work on task 258
+------------------------------
+Starting work on task 259
+------------------------------
+Starting work on task 260
+------------------------------
+Starting work on task 261
+------------------------------
+Starting work on task 262
+------------------------------
+Starting work on task 263
+------------------------------
+Starting work on task 264
+------------------------------
+Starting work on task 265
+------------------------------
+Starting work on task 266
+------------------------------
+Starting work on task 267
+------------------------------
+Starting work on task 268
+------------------------------
+Starting work on task 269
+------------------------------
+Starting work on task 270
+------------------------------
+Starting work on task 271
+------------------------------
+Starting work on task 272
+------------------------------
+Starting work on task 273
+------------------------------
+Starting work on task 274
+------------------------------
+Starting work on task 275
+------------------------------
+Starting work on task 276
+------------------------------
+Starting work on task 277
+------------------------------
+Starting work on task 278
+------------------------------
+Starting work on task 279
+------------------------------
+Starting work on task 280
+------------------------------
+Starting work on task 281
+------------------------------
+Starting work on task 282
+------------------------------
+Starting work on task 283
+------------------------------
+Starting work on task 284
+------------------------------
+Starting work on task 285
+------------------------------
+Starting work on task 286
+------------------------------
+Starting work on task 287
+------------------------------
+Starting work on task 288
+------------------------------
+Starting work on task 289
+------------------------------
+Starting work on task 290
+------------------------------
+Starting work on task 291
+------------------------------
+Starting work on task 292
+------------------------------
+Starting work on task 293
+------------------------------
+Starting work on task 294
+------------------------------
+Starting work on task 295
+------------------------------
+Starting work on task 296
+------------------------------
+Starting work on task 297
+------------------------------
+Starting work on task 298
+------------------------------
+Starting work on task 299
+------------------------------
+Starting work on task 300
+------------------------------
+Starting work on task 301
+------------------------------
+Starting work on task 302
+------------------------------
+Starting work on task 303
+------------------------------
+Starting work on task 304
+------------------------------
+Starting work on task 305
+------------------------------
+Starting work on task 306
+------------------------------
+Starting work on task 307
+------------------------------
+Starting work on task 308
+------------------------------
+Starting work on task 309
+------------------------------
+Starting work on task 310
+------------------------------
+Starting work on task 311
+------------------------------
+Starting work on task 312
+------------------------------
+Starting work on task 313
+------------------------------
+Starting work on task 314
+------------------------------
+Starting work on task 315
+------------------------------
+Starting work on task 316
+------------------------------
+Starting work on task 317
+------------------------------
+Starting work on task 318
+------------------------------
+Starting work on task 319
+------------------------------
+Starting work on task 320
+------------------------------
+Starting work on task 321
+------------------------------
+Starting work on task 322
+------------------------------
+Starting work on task 323
+------------------------------
+Starting work on task 324
+------------------------------
+Starting work on task 325
+------------------------------
+Starting work on task 326
+------------------------------
+Starting work on task 327
+------------------------------
+Starting work on task 328
+------------------------------
+Starting work on task 329
+------------------------------
+Starting work on task 330
+------------------------------
+Starting work on task 331
+------------------------------
+Starting work on task 332
+------------------------------
+Starting work on task 333
+------------------------------
+Starting work on task 334
+------------------------------
+Starting work on task 335
+------------------------------
+Starting work on task 336
+------------------------------
+Starting work on task 337
+------------------------------
+Starting work on task 338
+------------------------------
+Starting work on task 339
+------------------------------
+Starting work on task 340
+------------------------------
+Starting work on task 341
+------------------------------
+Starting work on task 342
+------------------------------
+Starting work on task 343
+------------------------------
+Starting work on task 344
+------------------------------
+Starting work on task 345
+------------------------------
+Starting work on task 346
+------------------------------
+Starting work on task 347
+------------------------------
+Starting work on task 348
+------------------------------
+Starting work on task 349
+------------------------------
+Starting work on task 350
+------------------------------
+Starting work on task 351
+------------------------------
+Starting work on task 352
+------------------------------
+Starting work on task 353
+------------------------------
+Starting work on task 354
+------------------------------
+Starting work on task 355
+------------------------------
+Starting work on task 356
+------------------------------
+Starting work on task 357
+------------------------------
+Starting work on task 358
+------------------------------
+Starting work on task 359
+------------------------------
+Starting work on task 360
+------------------------------
+Starting work on task 361
+------------------------------
+Starting work on task 362
+------------------------------
+Starting work on task 363
+------------------------------
+Starting work on task 364
+------------------------------
+Starting work on task 365
+------------------------------
+Starting work on task 366
+------------------------------
+Starting work on task 367
+------------------------------
+Starting work on task 368
+------------------------------
+Starting work on task 369
+------------------------------
+Starting work on task 370
+------------------------------
+Starting work on task 371
+------------------------------
+Starting work on task 372
+------------------------------
+Starting work on task 373
+------------------------------
+Starting work on task 374
+------------------------------
+Starting work on task 375
+------------------------------
+Starting work on task 376
+------------------------------
+Starting work on task 377
+------------------------------
+Starting work on task 378
+------------------------------
+Starting work on task 379
+------------------------------
+Starting work on task 380
+------------------------------
+Starting work on task 381
+------------------------------
+Starting work on task 382
+------------------------------
+Starting work on task 383
+------------------------------
+Starting work on task 384
+------------------------------
+Starting work on task 385
+------------------------------
+Starting work on task 386
+------------------------------
+Starting work on task 387
+------------------------------
+Starting work on task 388
+------------------------------
+Starting work on task 389
+------------------------------
+Starting work on task 390
+------------------------------
+Starting work on task 391
+------------------------------
+Starting work on task 392
+------------------------------
+Starting work on task 393
+------------------------------
+Starting work on task 394
+------------------------------
+Starting work on task 395
+------------------------------
+Starting work on task 396
+------------------------------
+Starting work on task 397
+------------------------------
+Starting work on task 398
+------------------------------
+Starting work on task 399
+------------------------------
+Starting work on task 400
+------------------------------
+Starting work on task 401
+------------------------------
+Starting work on task 402
+------------------------------
+Starting work on task 403
+------------------------------
+Starting work on task 404
+------------------------------
+Starting work on task 405
+------------------------------
+Starting work on task 406
+------------------------------
+Starting work on task 407
+------------------------------
+Starting work on task 408
+------------------------------
+Starting work on task 409
+------------------------------
+Starting work on task 410
+------------------------------
+Starting work on task 411
+------------------------------
+Starting work on task 412
+------------------------------
+Starting work on task 413
+------------------------------
+Starting work on task 414
+------------------------------
+Starting work on task 415
+------------------------------
+Starting work on task 416
+------------------------------
+Starting work on task 417
+------------------------------
+Starting work on task 418
+------------------------------
+Starting work on task 419
+------------------------------
+Starting work on task 420
+------------------------------
+Starting work on task 421
+------------------------------
+Starting work on task 422
+------------------------------
+Starting work on task 423
+------------------------------
+Starting work on task 424
+------------------------------
+Starting work on task 425
+------------------------------
+Starting work on task 426
+------------------------------
+Starting work on task 427
+------------------------------
+Starting work on task 428
+------------------------------
+Starting work on task 429
+------------------------------
+Starting work on task 430
+------------------------------
+Starting work on task 431
+------------------------------
+Starting work on task 432
+------------------------------
+Starting work on task 433
+------------------------------
+Starting work on task 434
+------------------------------
+Starting work on task 435
+------------------------------
+Starting work on task 436
+------------------------------
+Starting work on task 437
+------------------------------
+Starting work on task 438
+------------------------------
+Starting work on task 439
+------------------------------
+Starting work on task 440
+------------------------------
+Starting work on task 441
+------------------------------
+Starting work on task 442
+------------------------------
+Starting work on task 443
+------------------------------
+Starting work on task 444
+------------------------------
+Starting work on task 445
+------------------------------
+Starting work on task 446
+------------------------------
+Starting work on task 447
+------------------------------
+Starting work on task 448
+------------------------------
+Starting work on task 449
+------------------------------
+Starting work on task 450
+------------------------------
+Starting work on task 451
+------------------------------
+Starting work on task 452
+------------------------------
+Starting work on task 453
+------------------------------
+Starting work on task 454
+------------------------------
+Starting work on task 455
+------------------------------
+Starting work on task 456
+------------------------------
+Starting work on task 457
+------------------------------
+Starting work on task 458
+------------------------------
+Starting work on task 459
+------------------------------
+Starting work on task 460
+------------------------------
+Starting work on task 461
+------------------------------
+Starting work on task 462
+------------------------------
+Starting work on task 463
+------------------------------
+Starting work on task 464
+------------------------------
+Starting work on task 465
+------------------------------
+Starting work on task 466
+------------------------------
+Starting work on task 467
+------------------------------
+Starting work on task 468
+------------------------------
+Starting work on task 469
+------------------------------
+Starting work on task 470
+------------------------------
+Starting work on task 471
+------------------------------
+Starting work on task 472
+------------------------------
+Starting work on task 473
+------------------------------
+Starting work on task 474
+------------------------------
+Starting work on task 475
+------------------------------
+Starting work on task 476
+------------------------------
+Starting work on task 477
+------------------------------
+Starting work on task 478
+------------------------------
+Starting work on task 479
+------------------------------
+Starting work on task 480
+------------------------------
+Starting work on task 481
+------------------------------
+Starting work on task 482
+------------------------------
+Starting work on task 483
+------------------------------
+Starting work on task 484
+------------------------------
+Starting work on task 485
+------------------------------
+Starting work on task 486
+------------------------------
+Starting work on task 487
+------------------------------
+Starting work on task 488
+------------------------------
+Starting work on task 489
+------------------------------
+Starting work on task 490
+------------------------------
+Starting work on task 491
+------------------------------
+Starting work on task 492
+------------------------------
+Starting work on task 493
+------------------------------
+Starting work on task 494
+------------------------------
+Starting work on task 495
+------------------------------
+Starting work on task 496
+------------------------------
+Starting work on task 497
+------------------------------
+Starting work on task 498
+------------------------------
+Starting work on task 499
+------------------------------
+Starting work on task 500
+------------------------------
+Starting work on task 501
+------------------------------
+Starting work on task 502
+------------------------------
+Starting work on task 503
+------------------------------
+Starting work on task 504
+------------------------------
+Starting work on task 505
+------------------------------
+Starting work on task 506
+------------------------------
+Starting work on task 507
+------------------------------
+Starting work on task 508
+------------------------------
+Starting work on task 509
+------------------------------
+Starting work on task 510
+------------------------------
+Starting work on task 511
+------------------------------
+Starting work on task 512
+------------------------------
+Starting work on task 513
+------------------------------
+Starting work on task 514
+------------------------------
+Starting work on task 515
+------------------------------
+Starting work on task 516
+------------------------------
+Starting work on task 517
+------------------------------
+Starting work on task 518
+------------------------------
+Starting work on task 519
+------------------------------
+Starting work on task 520
+------------------------------
+Starting work on task 521
+------------------------------
+Starting work on task 522
+------------------------------
+Starting work on task 523
+------------------------------
+Starting work on task 524
+------------------------------
+Starting work on task 525
+------------------------------
+Starting work on task 526
+------------------------------
+Starting work on task 527
+------------------------------
+Starting work on task 528
+------------------------------
+Starting work on task 529
+------------------------------
+Starting work on task 530
+------------------------------
+Starting work on task 531
+------------------------------
+Starting work on task 532
+------------------------------
+Starting work on task 533
+------------------------------
+Starting work on task 534
+------------------------------
+Starting work on task 535
+------------------------------
+Starting work on task 536
+------------------------------
+Starting work on task 537
+------------------------------
+Starting work on task 538
+------------------------------
+Starting work on task 539
+------------------------------
+Starting work on task 540
+------------------------------
+Starting work on task 541
+------------------------------
+Starting work on task 542
+------------------------------
+Starting work on task 543
+------------------------------
+Starting work on task 544
+------------------------------
+Starting work on task 545
+------------------------------
+Starting work on task 546
+------------------------------
+Starting work on task 547
+------------------------------
+Starting work on task 548
+------------------------------
+Starting work on task 549
+------------------------------
+Starting work on task 550
+------------------------------
+Starting work on task 551
+------------------------------
+Starting work on task 552
+------------------------------
+Starting work on task 553
+------------------------------
+Starting work on task 554
+------------------------------
+Starting work on task 555
+------------------------------
+Starting work on task 556
+------------------------------
+Starting work on task 557
+------------------------------
+Starting work on task 558
+------------------------------
+Starting work on task 559
+------------------------------
+Starting work on task 560
+------------------------------
+Starting work on task 561
+------------------------------
+Starting work on task 562
+------------------------------
+Starting work on task 563
+------------------------------
+Starting work on task 564
+------------------------------
+Starting work on task 565
+------------------------------
+Starting work on task 566
+------------------------------
+Starting work on task 567
+------------------------------
+Starting work on task 568
+------------------------------
+Starting work on task 569
+------------------------------
+Starting work on task 570
+------------------------------
+Starting work on task 571
+------------------------------
+Starting work on task 572
+------------------------------
+Starting work on task 573
+------------------------------
+Starting work on task 574
+------------------------------
+Starting work on task 575
+------------------------------
+Starting work on task 576
+------------------------------
+Starting work on task 577
+------------------------------
+Starting work on task 578
+------------------------------
+Starting work on task 579
+------------------------------
+Starting work on task 580
+------------------------------
+Starting work on task 581
+------------------------------
+Starting work on task 582
+------------------------------
+Starting work on task 583
+------------------------------
+Starting work on task 584
+------------------------------
+Starting work on task 585
+------------------------------
+Starting work on task 586
+------------------------------
+Starting work on task 587
+------------------------------
+Starting work on task 588
+------------------------------
+Starting work on task 589
+------------------------------
+Starting work on task 590
+------------------------------
+Starting work on task 591
+------------------------------
+Starting work on task 592
+------------------------------
+Starting work on task 593
+------------------------------
+Starting work on task 594
+------------------------------
+Starting work on task 595
+------------------------------
+Starting work on task 596
+------------------------------
+Starting work on task 597
+------------------------------
+Starting work on task 598
+------------------------------
+Starting work on task 599
+------------------------------
+Starting work on task 600
+------------------------------
+Starting work on task 601
+------------------------------
+Starting work on task 602
+------------------------------
+Starting work on task 603
+------------------------------
+Starting work on task 604
+------------------------------
+Starting work on task 605
+------------------------------
+Starting work on task 606
+------------------------------
+Starting work on task 607
+------------------------------
+Starting work on task 608
+------------------------------
+Starting work on task 609
+------------------------------
+Starting work on task 610
+------------------------------
+Starting work on task 611
+------------------------------
+Starting work on task 612
+------------------------------
+Starting work on task 613
+------------------------------
+Starting work on task 614
+------------------------------
+Starting work on task 615
+------------------------------
+Starting work on task 616
+------------------------------
+Starting work on task 617
+------------------------------
+Starting work on task 618
+------------------------------
+Starting work on task 619
+------------------------------
+Starting work on task 620
+------------------------------
+Starting work on task 621
+------------------------------
+Starting work on task 622
+------------------------------
+Starting work on task 623
+------------------------------
+Starting work on task 624
+------------------------------
+Starting work on task 625
+------------------------------
+Starting work on task 626
+------------------------------
+Starting work on task 627
+------------------------------
+Starting work on task 628
+------------------------------
+Starting work on task 629
+------------------------------
+Starting work on task 630
+------------------------------
+Starting work on task 631
+------------------------------
+Starting work on task 632
+------------------------------
+Starting work on task 633
+------------------------------
+Starting work on task 634
+------------------------------
+Starting work on task 635
+------------------------------
+Starting work on task 636
+------------------------------
+Starting work on task 637
+------------------------------
+Starting work on task 638
+------------------------------
+Starting work on task 639
+------------------------------
+Starting work on task 640
+------------------------------
+Starting work on task 641
+------------------------------
+Starting work on task 642
+------------------------------
+Starting work on task 643
+------------------------------
+Starting work on task 644
+------------------------------
+Starting work on task 645
+------------------------------
+Starting work on task 646
+------------------------------
+Starting work on task 647
+------------------------------
+Starting work on task 648
+------------------------------
+Starting work on task 649
+------------------------------
+Starting work on task 650
+------------------------------
+Starting work on task 651
+------------------------------
+Starting work on task 652
+------------------------------
+Starting work on task 653
+------------------------------
+Starting work on task 654
+------------------------------
+Starting work on task 655
+------------------------------
+Starting work on task 656
+------------------------------
+Starting work on task 657
+------------------------------
+Starting work on task 658
+------------------------------
+Starting work on task 659
+------------------------------
+Starting work on task 660
+------------------------------
+Starting work on task 661
+------------------------------
+Starting work on task 662
+------------------------------
+Starting work on task 663
+------------------------------
+Starting work on task 664
+------------------------------
+Starting work on task 665
+------------------------------
+Starting work on task 666
+------------------------------
+Starting work on task 667
+------------------------------
+Starting work on task 668
+------------------------------
+Starting work on task 669
+------------------------------
+Starting work on task 670
+------------------------------
+Starting work on task 671
+------------------------------
+Starting work on task 672
+------------------------------
+Starting work on task 673
+------------------------------
+Starting work on task 674
+------------------------------
+Starting work on task 675
+------------------------------
+Starting work on task 676
+------------------------------
+Starting work on task 677
+------------------------------
+Starting work on task 678
+------------------------------
+Starting work on task 679
+------------------------------
+Starting work on task 680
+------------------------------
+Starting work on task 681
+------------------------------
+Starting work on task 682
+------------------------------
+Starting work on task 683
+------------------------------
+Starting work on task 684
+------------------------------
+Starting work on task 685
+------------------------------
+Starting work on task 686
+------------------------------
+Starting work on task 687
+------------------------------
+Starting work on task 688
+------------------------------
+Starting work on task 689
+------------------------------
+Starting work on task 690
+------------------------------
+Starting work on task 691
+------------------------------
+Starting work on task 692
+------------------------------
+Starting work on task 693
+------------------------------
+Starting work on task 694
+------------------------------
+Starting work on task 695
+------------------------------
+Starting work on task 696
+------------------------------
+Starting work on task 697
+------------------------------
+Starting work on task 698
+------------------------------
+Starting work on task 699
+------------------------------
+Starting work on task 700
+------------------------------
+Starting work on task 701
+------------------------------
+Starting work on task 702
+------------------------------
+Starting work on task 703
+------------------------------
+Starting work on task 704
+------------------------------
+Starting work on task 705
+------------------------------
+Starting work on task 706
+------------------------------
+Starting work on task 707
+------------------------------
+Starting work on task 708
+------------------------------
+Starting work on task 709
+------------------------------
+Starting work on task 710
+------------------------------
+Starting work on task 711
+------------------------------
+Starting work on task 712
+------------------------------
+Starting work on task 713
+------------------------------
+Starting work on task 714
+------------------------------
+Starting work on task 715
+------------------------------
+Starting work on task 716
+------------------------------
+Starting work on task 717
+------------------------------
+Starting work on task 718
+------------------------------
+Starting work on task 719
+------------------------------
+Starting work on task 720
+------------------------------
+Starting work on task 721
+------------------------------
+Starting work on task 722
+------------------------------
+Starting work on task 723
+------------------------------
+Starting work on task 724
+------------------------------
+Starting work on task 725
+------------------------------
+Starting work on task 726
+------------------------------
+Starting work on task 727
+------------------------------
+Starting work on task 728
+------------------------------
+Starting work on task 729
+------------------------------
+Starting work on task 730
+------------------------------
+Starting work on task 731
+------------------------------
+Starting work on task 732
+------------------------------
+Starting work on task 733
+------------------------------
+Starting work on task 734
+------------------------------
+Starting work on task 735
+------------------------------
+Starting work on task 736
+------------------------------
+Starting work on task 737
+------------------------------
+Starting work on task 738
+------------------------------
+Starting work on task 739
+------------------------------
+Starting work on task 740
+------------------------------
+Starting work on task 741
+------------------------------
+Starting work on task 742
+------------------------------
+Starting work on task 743
+------------------------------
+Starting work on task 744
+------------------------------
+Starting work on task 745
+------------------------------
+Starting work on task 746
+------------------------------
+Starting work on task 747
+------------------------------
+Starting work on task 748
+------------------------------
+Starting work on task 749
+------------------------------
+Starting work on task 750
+------------------------------
+Starting work on task 751
+------------------------------
+Starting work on task 752
+------------------------------
+Starting work on task 753
+------------------------------
+Starting work on task 754
+------------------------------
+Starting work on task 755
+------------------------------
+Starting work on task 756
+------------------------------
+Starting work on task 757
+------------------------------
+Starting work on task 758
+------------------------------
+Starting work on task 759
+------------------------------
+Starting work on task 760
+------------------------------
+Starting work on task 761
+------------------------------
+Starting work on task 762
+------------------------------
+Starting work on task 763
+------------------------------
+Starting work on task 764
+------------------------------
+Starting work on task 765
+------------------------------
+Starting work on task 766
+------------------------------
+Starting work on task 767
+------------------------------
+Starting work on task 768
+------------------------------
+Starting work on task 769
+------------------------------
+Starting work on task 770
+------------------------------
+Starting work on task 771
+------------------------------
+Starting work on task 772
+------------------------------
+Starting work on task 773
+------------------------------
+Starting work on task 774
+------------------------------
+Starting work on task 775
+------------------------------
+Starting work on task 776
+------------------------------
+Starting work on task 777
+------------------------------
+Starting work on task 778
+------------------------------
+Starting work on task 779
+------------------------------
+Starting work on task 780
+------------------------------
+Starting work on task 781
+------------------------------
+Starting work on task 782
+------------------------------
+Starting work on task 783
+------------------------------
+Starting work on task 784
+------------------------------
+Starting work on task 785
+------------------------------
+Starting work on task 786
+------------------------------
+Starting work on task 787
+------------------------------
+Starting work on task 788
+------------------------------
+Starting work on task 789
+------------------------------
+Starting work on task 790
+------------------------------
+Starting work on task 791
+------------------------------
+Starting work on task 792
+------------------------------
+Starting work on task 793
+------------------------------
+Starting work on task 794
+------------------------------
+Starting work on task 795
+------------------------------
+Starting work on task 796
+------------------------------
+Starting work on task 797
+------------------------------
+Starting work on task 798
+------------------------------
+Starting work on task 799
+------------------------------
+Starting work on task 800
+------------------------------
+Starting work on task 801
+------------------------------
+Starting work on task 802
+------------------------------
+Starting work on task 803
+------------------------------
+Starting work on task 804
+------------------------------
+Starting work on task 805
+------------------------------
+Starting work on task 806
+------------------------------
+Starting work on task 807
+------------------------------
+Starting work on task 808
+------------------------------
+Starting work on task 809
+------------------------------
+Starting work on task 810
+------------------------------
+Starting work on task 811
+------------------------------
+Starting work on task 812
+------------------------------
+Starting work on task 813
+------------------------------
+Starting work on task 814
+------------------------------
+Starting work on task 815
+------------------------------
+Starting work on task 816
+------------------------------
+Starting work on task 817
+------------------------------
+Starting work on task 818
+------------------------------
+Starting work on task 819
+------------------------------
+Starting work on task 820
+------------------------------
+Starting work on task 821
+------------------------------
+Starting work on task 822
+------------------------------
+Starting work on task 823
+------------------------------
+Starting work on task 824
+------------------------------
+Starting work on task 825
+------------------------------
+Starting work on task 826
+------------------------------
+Starting work on task 827
+------------------------------
+Starting work on task 828
+------------------------------
+Starting work on task 829
+------------------------------
+Starting work on task 830
+------------------------------
+Starting work on task 831
+------------------------------
+Starting work on task 832
+------------------------------
+Starting work on task 833
+------------------------------
+Starting work on task 834
+------------------------------
+Starting work on task 835
+------------------------------
+Starting work on task 836
+------------------------------
+Starting work on task 837
+------------------------------
+Starting work on task 838
+------------------------------
+Starting work on task 839
+------------------------------
+Starting work on task 840
+------------------------------
+Starting work on task 841
+------------------------------
+Starting work on task 842
+------------------------------
+Starting work on task 843
+------------------------------
+Starting work on task 844
+------------------------------
+Starting work on task 845
+------------------------------
+Starting work on task 846
+------------------------------
+Starting work on task 847
+------------------------------
+Starting work on task 848
+------------------------------
+Starting work on task 849
+------------------------------
+Starting work on task 850
+------------------------------
+Starting work on task 851
+------------------------------
+Starting work on task 852
+------------------------------
+Starting work on task 853
+------------------------------
+Starting work on task 854
+------------------------------
+Starting work on task 855
+------------------------------
+Starting work on task 856
+------------------------------
+Starting work on task 857
+------------------------------
+Starting work on task 858
+------------------------------
+Starting work on task 859
+------------------------------
+Starting work on task 860
+------------------------------
+Starting work on task 861
+------------------------------
+Starting work on task 862
+------------------------------
+Starting work on task 863
+------------------------------
+Starting work on task 864
+------------------------------
+Starting work on task 865
+------------------------------
+Starting work on task 866
+------------------------------
+Starting work on task 867
+------------------------------
+Starting work on task 868
+------------------------------
+Starting work on task 869
+------------------------------
+Starting work on task 870
+------------------------------
+Starting work on task 871
+------------------------------
+Starting work on task 872
+------------------------------
+Starting work on task 873
+------------------------------
+Starting work on task 874
+------------------------------
+Starting work on task 875
+------------------------------
+Starting work on task 876
+------------------------------
+Starting work on task 877
+------------------------------
+Starting work on task 878
+------------------------------
+Starting work on task 879
+------------------------------
+Starting work on task 880
+------------------------------
+Starting work on task 881
+------------------------------
+Starting work on task 882
+------------------------------
+Starting work on task 883
+------------------------------
+Starting work on task 884
+------------------------------
+Starting work on task 885
+------------------------------
+Starting work on task 886
+------------------------------
+Starting work on task 887
+------------------------------
+Starting work on task 888
+------------------------------
+Starting work on task 889
+------------------------------
+Starting work on task 890
+------------------------------
+Starting work on task 891
+------------------------------
+Starting work on task 892
+------------------------------
+Starting work on task 893
+------------------------------
+Starting work on task 894
+------------------------------
+Starting work on task 895
+------------------------------
+Starting work on task 896
+------------------------------
+Starting work on task 897
+------------------------------
+Starting work on task 898
+------------------------------
+Starting work on task 899
+------------------------------
+Starting work on task 900
+------------------------------
+Starting work on task 901
+------------------------------
+Starting work on task 902
+------------------------------
+Starting work on task 903
+------------------------------
+Starting work on task 904
+------------------------------
+Starting work on task 905
+------------------------------
+Starting work on task 906
+------------------------------
+Starting work on task 907
+------------------------------
+Starting work on task 908
+------------------------------
+Starting work on task 909
+------------------------------
+Starting work on task 910
+------------------------------
+Starting work on task 911
+------------------------------
+Starting work on task 912
+------------------------------
+Starting work on task 913
+------------------------------
+Starting work on task 914
+------------------------------
+Starting work on task 915
+------------------------------
+Starting work on task 916
+------------------------------
+Starting work on task 917
+------------------------------
+Starting work on task 918
+------------------------------
+Starting work on task 919
+------------------------------
+Starting work on task 920
+------------------------------
+Starting work on task 921
+------------------------------
+Starting work on task 922
+------------------------------
+Starting work on task 923
+------------------------------
+Starting work on task 924
+------------------------------
+Starting work on task 925
+------------------------------
+Starting work on task 926
+------------------------------
+Starting work on task 927
+------------------------------
+Starting work on task 928
+------------------------------
+Starting work on task 929
+------------------------------
+Starting work on task 930
+------------------------------
+Starting work on task 931
+------------------------------
+Starting work on task 932
+------------------------------
+Starting work on task 933
+------------------------------
+Starting work on task 934
+------------------------------
+Starting work on task 935
+------------------------------
+Starting work on task 936
+------------------------------
+Starting work on task 937
+------------------------------
+Starting work on task 938
+------------------------------
+Starting work on task 939
+------------------------------
+Starting work on task 940
+------------------------------
+Starting work on task 941
+------------------------------
+Starting work on task 942
+------------------------------
+Starting work on task 943
+------------------------------
+Starting work on task 944
+------------------------------
+Starting work on task 945
+------------------------------
+Starting work on task 946
+------------------------------
+Starting work on task 947
+------------------------------
+Starting work on task 948
+------------------------------
+Starting work on task 949
+------------------------------
+Starting work on task 950
+------------------------------
+Starting work on task 951
+------------------------------
+Starting work on task 952
+------------------------------
+Starting work on task 953
+------------------------------
+Starting work on task 954
+------------------------------
+Starting work on task 955
+------------------------------
+Starting work on task 956
+------------------------------
+Starting work on task 957
+------------------------------
+Starting work on task 958
+------------------------------
+Starting work on task 959
+------------------------------
+Starting work on task 960
+------------------------------
+Starting work on task 961
+------------------------------
+Starting work on task 962
+------------------------------
+Starting work on task 963
+------------------------------
+Starting work on task 964
+------------------------------
+Starting work on task 965
+------------------------------
+Starting work on task 966
+------------------------------
+Starting work on task 967
+------------------------------
+Starting work on task 968
+------------------------------
+Starting work on task 969
+------------------------------
+Starting work on task 970
+------------------------------
+Starting work on task 971
+------------------------------
+Starting work on task 972
+------------------------------
+Starting work on task 973
+------------------------------
+Starting work on task 974
+------------------------------
+Starting work on task 975
+------------------------------
+Starting work on task 976
+------------------------------
+Starting work on task 977
+------------------------------
+Starting work on task 978
+------------------------------
+Starting work on task 979
+------------------------------
+Starting work on task 980
+------------------------------
+Starting work on task 981
+------------------------------
+Starting work on task 982
+------------------------------
+Starting work on task 983
+------------------------------
+Starting work on task 984
+------------------------------
+Starting work on task 985
+------------------------------
+Starting work on task 986
+------------------------------
+Starting work on task 987
+------------------------------
+Starting work on task 988
+------------------------------
+Starting work on task 989
+------------------------------
+Starting work on task 990
+------------------------------
+Starting work on task 991
+------------------------------
+Starting work on task 992
+------------------------------
+Starting work on task 993
+------------------------------
+Starting work on task 994
+------------------------------
+Starting work on task 995
+------------------------------
+Starting work on task 996
+------------------------------
+Starting work on task 997
+------------------------------
+Starting work on task 998
+------------------------------
+Starting work on task 999
+------------------------------
+Starting work on task 1000
+------------------------------
+Starting work on task 1001
+------------------------------
+Starting work on task 1002
+------------------------------
+Starting work on task 1003
+------------------------------
+Starting work on task 1004
+------------------------------
+Starting work on task 1005
+------------------------------
+Starting work on task 1006
+------------------------------
+Starting work on task 1007
+------------------------------
+Starting work on task 1008
+------------------------------
+Starting work on task 1009
+------------------------------
+Starting work on task 1010
+------------------------------
+Starting work on task 1011
+------------------------------
+Starting work on task 1012
+------------------------------
+Starting work on task 1013
+------------------------------
+Starting work on task 1014
+------------------------------
+Starting work on task 1015
+------------------------------
+Starting work on task 1016
+------------------------------
+Starting work on task 1017
+------------------------------
+Starting work on task 1018
+------------------------------
+Starting work on task 1019
+------------------------------
+Starting work on task 1020
+------------------------------
+Starting work on task 1021
+------------------------------
+Starting work on task 1022
+------------------------------
+Starting work on task 1023
+------------------------------
+Starting work on task 1024
+------------------------------
+Starting work on task 1025
+------------------------------
+Starting work on task 1026
+------------------------------
+Starting work on task 1027
+------------------------------
+Starting work on task 1028
+------------------------------
+Starting work on task 1029
+------------------------------
+Starting work on task 1030
+------------------------------
+Starting work on task 1031
+------------------------------
+Starting work on task 1032
+------------------------------
+Starting work on task 1033
+------------------------------
+Starting work on task 1034
+------------------------------
+Starting work on task 1035
+------------------------------
+Starting work on task 1036
+------------------------------
+Starting work on task 1037
+------------------------------
+Starting work on task 1038
+------------------------------
+Starting work on task 1039
+------------------------------
+Starting work on task 1040
+------------------------------
+Starting work on task 1041
+------------------------------
+Starting work on task 1042
+------------------------------
+Starting work on task 1043
+------------------------------
+Starting work on task 1044
+------------------------------
+Starting work on task 1045
+------------------------------
+Starting work on task 1046
+------------------------------
+Starting work on task 1047
+------------------------------
+Starting work on task 1048
+------------------------------
+Starting work on task 1049
+------------------------------
+Starting work on task 1050
+------------------------------
+Starting work on task 1051
+------------------------------
+Starting work on task 1052
+------------------------------
+Starting work on task 1053
+------------------------------
+Starting work on task 1054
+------------------------------
+Starting work on task 1055
+------------------------------
+Starting work on task 1056
+------------------------------
+Starting work on task 1057
+------------------------------
+Starting work on task 1058
+------------------------------
+Starting work on task 1059
+------------------------------
+Starting work on task 1060
+------------------------------
+Starting work on task 1061
+------------------------------
+Starting work on task 1062
+------------------------------
+Starting work on task 1063
+------------------------------
+Starting work on task 1064
+------------------------------
+Starting work on task 1065
+------------------------------
+Starting work on task 1066
+------------------------------
+Starting work on task 1067
+------------------------------
+Starting work on task 1068
+------------------------------
+Starting work on task 1069
+------------------------------
+Starting work on task 1070
+------------------------------
+Starting work on task 1071
+------------------------------
+Starting work on task 1072
+------------------------------
+Starting work on task 1073
+------------------------------
+Starting work on task 1074
+------------------------------
+Starting work on task 1075
+------------------------------
+Starting work on task 1076
+------------------------------
+Starting work on task 1077
+------------------------------
+Starting work on task 1078
+------------------------------
+Starting work on task 1079
+------------------------------
+Starting work on task 1080
+------------------------------
+Starting work on task 1081
+------------------------------
+Starting work on task 1082
+------------------------------
+Starting work on task 1083
+------------------------------
+Starting work on task 1084
+------------------------------
+Starting work on task 1085
+------------------------------
+Starting work on task 1086
+------------------------------
+Starting work on task 1087
+------------------------------
+Starting work on task 1088
+------------------------------
+Starting work on task 1089
+------------------------------
+Starting work on task 1090
+------------------------------
+Starting work on task 1091
+------------------------------
+Starting work on task 1092
+------------------------------
+Starting work on task 1093
+------------------------------
+Starting work on task 1094
+------------------------------
+Starting work on task 1095
+------------------------------
+Starting work on task 1096
+------------------------------
+Starting work on task 1097
+------------------------------
+Starting work on task 1098
+------------------------------
+Starting work on task 1099
+------------------------------
+Starting work on task 1100
+------------------------------
+Starting work on task 1101
+------------------------------
+Starting work on task 1102
+------------------------------
+Starting work on task 1103
+------------------------------
+Starting work on task 1104
+------------------------------
+Starting work on task 1105
+------------------------------
+Starting work on task 1106
+------------------------------
+Starting work on task 1107
+------------------------------
+Starting work on task 1108
+------------------------------
+Starting work on task 1109
+------------------------------
+Starting work on task 1110
+------------------------------
+Starting work on task 1111
+------------------------------
+Starting work on task 1112
+------------------------------
+Starting work on task 1113
+------------------------------
+Starting work on task 1114
+------------------------------
+Starting work on task 1115
+------------------------------
+Starting work on task 1116
+------------------------------
+Starting work on task 1117
+------------------------------
+Starting work on task 1118
+------------------------------
+Starting work on task 1119
+------------------------------
+Starting work on task 1120
+------------------------------
+Starting work on task 1121
+------------------------------
+Starting work on task 1122
+------------------------------
+Starting work on task 1123
+------------------------------
+Starting work on task 1124
+------------------------------
+Starting work on task 1125
+------------------------------
+Starting work on task 1126
+------------------------------
+Starting work on task 1127
+------------------------------
+Starting work on task 1128
+------------------------------
+Starting work on task 1129
+------------------------------
+Starting work on task 1130
+------------------------------
+Starting work on task 1131
+------------------------------
+Starting work on task 1132
+------------------------------
+Starting work on task 1133
+------------------------------
+Starting work on task 1134
+------------------------------
+Starting work on task 1135
+------------------------------
+Starting work on task 1136
+------------------------------
+Starting work on task 1137
+------------------------------
+Starting work on task 1138
+------------------------------
+Starting work on task 1139
+------------------------------
+Starting work on task 1140
+------------------------------
+Starting work on task 1141
+------------------------------
+Starting work on task 1142
+------------------------------
+Starting work on task 1143
+------------------------------
+Starting work on task 1144
+------------------------------
+Starting work on task 1145
+------------------------------
+Starting work on task 1146
+------------------------------
+Starting work on task 1147
+------------------------------
+Starting work on task 1148
+------------------------------
+Starting work on task 1149
+------------------------------
+Starting work on task 1150
+------------------------------
+Starting work on task 1151
+------------------------------
+Starting work on task 1152
+------------------------------
+Starting work on task 1153
+------------------------------
+Starting work on task 1154
+------------------------------
+Starting work on task 1155
+------------------------------
+Starting work on task 1156
+------------------------------
+Starting work on task 1157
+------------------------------
+Starting work on task 1158
+------------------------------
+Starting work on task 1159
+------------------------------
+Starting work on task 1160
+------------------------------
+Starting work on task 1161
+------------------------------
+Starting work on task 1162
+------------------------------
+Starting work on task 1163
+------------------------------
+Starting work on task 1164
+------------------------------
+Starting work on task 1165
+------------------------------
+Starting work on task 1166
+------------------------------
+Starting work on task 1167
+------------------------------
+Starting work on task 1168
+------------------------------
+Starting work on task 1169
+------------------------------
+Starting work on task 1170
+------------------------------
+Starting work on task 1171
+------------------------------
+Starting work on task 1172
+------------------------------
+Starting work on task 1173
+------------------------------
+Starting work on task 1174
+------------------------------
+Starting work on task 1175
+------------------------------
+Starting work on task 1176
+------------------------------
+Starting work on task 1177
+------------------------------
+Starting work on task 1178
+------------------------------
+Starting work on task 1179
+------------------------------
+Starting work on task 1180
+------------------------------
+Starting work on task 1181
+------------------------------
+Starting work on task 1182
+------------------------------
+Starting work on task 1183
+------------------------------
+Starting work on task 1184
+------------------------------
+Starting work on task 1185
+------------------------------
+Starting work on task 1186
+------------------------------
+Starting work on task 1187
+------------------------------
+Starting work on task 1188
+------------------------------
+Starting work on task 1189
+------------------------------
+Starting work on task 1190
+------------------------------
+Starting work on task 1191
+------------------------------
+Starting work on task 1192
+------------------------------
+Starting work on task 1193
+------------------------------
+Starting work on task 1194
+------------------------------
+Starting work on task 1195
+------------------------------
+Starting work on task 1196
+------------------------------
+Starting work on task 1197
+------------------------------
+Starting work on task 1198
+------------------------------
+Starting work on task 1199
+------------------------------
+Starting work on task 1200
+------------------------------
+Starting work on task 1201
+------------------------------
+Starting work on task 1202
+------------------------------
+Starting work on task 1203
+------------------------------
+Starting work on task 1204
+------------------------------
+Starting work on task 1205
+------------------------------
+Starting work on task 1206
+------------------------------
+Starting work on task 1207
+------------------------------
+Starting work on task 1208
+------------------------------
+Starting work on task 1209
+------------------------------
+Starting work on task 1210
+------------------------------
+Starting work on task 1211
+------------------------------
+Starting work on task 1212
+------------------------------
+Starting work on task 1213
+------------------------------
+Starting work on task 1214
+------------------------------
+Starting work on task 1215
+------------------------------
+Starting work on task 1216
+------------------------------
+Starting work on task 1217
+------------------------------
+Starting work on task 1218
+------------------------------
+Starting work on task 1219
+------------------------------
+Starting work on task 1220
+------------------------------
+Starting work on task 1221
+------------------------------
+Starting work on task 1222
+------------------------------
+Starting work on task 1223
+------------------------------
+Starting work on task 1224
+------------------------------
+Starting work on task 1225
+------------------------------
+Starting work on task 1226
+------------------------------
+Starting work on task 1227
+------------------------------
+Starting work on task 1228
+------------------------------
+Starting work on task 1229
+------------------------------
+Starting work on task 1230
+------------------------------
+Starting work on task 1231
+------------------------------
+Starting work on task 1232
+------------------------------
+Starting work on task 1233
+------------------------------
+Starting work on task 1234
+------------------------------
+Starting work on task 1235
+------------------------------
+Starting work on task 1236
+------------------------------
+Starting work on task 1237
+------------------------------
+Starting work on task 1238
+------------------------------
+Starting work on task 1239
+------------------------------
+Starting work on task 1240
+------------------------------
+Starting work on task 1241
+------------------------------
+Starting work on task 1242
+------------------------------
+Starting work on task 1243
+------------------------------
+Starting work on task 1244
+------------------------------
+Starting work on task 1245
+------------------------------
+Starting work on task 1246
+------------------------------
+Starting work on task 1247
+------------------------------
+Starting work on task 1248
+------------------------------
+Starting work on task 1249
+------------------------------
+Starting work on task 1250
+------------------------------
+Starting work on task 1251
+------------------------------
+Starting work on task 1252
+------------------------------
+Starting work on task 1253
+------------------------------
+Starting work on task 1254
+------------------------------
+Starting work on task 1255
+------------------------------
+Starting work on task 1256
+------------------------------
+Starting work on task 1257
+------------------------------
+Starting work on task 1258
+------------------------------
+Starting work on task 1259
+------------------------------
+Starting work on task 1260
+------------------------------
+Starting work on task 1261
+------------------------------
+Starting work on task 1262
+------------------------------
+Starting work on task 1263
+------------------------------
+Starting work on task 1264
+------------------------------
+Starting work on task 1265
+------------------------------
+Starting work on task 1266
+------------------------------
+Starting work on task 1267
+------------------------------
+Starting work on task 1268
+------------------------------
+Starting work on task 1269
+------------------------------
+Starting work on task 1270
+------------------------------
+Starting work on task 1271
+------------------------------
+Starting work on task 1272
+------------------------------
+Starting work on task 1273
+------------------------------
+Starting work on task 1274
+------------------------------
+Starting work on task 1275
+------------------------------
+Starting work on task 1276
+------------------------------
+Starting work on task 1277
+------------------------------
+Starting work on task 1278
+------------------------------
+Starting work on task 1279
+------------------------------
+Starting work on task 1280
+------------------------------
+Starting work on task 1281
+------------------------------
+Starting work on task 1282
+------------------------------
+Starting work on task 1283
+------------------------------
+Starting work on task 1284
+------------------------------
+Starting work on task 1285
+------------------------------
+Starting work on task 1286
+------------------------------
+Starting work on task 1287
+------------------------------
+Starting work on task 1288
+------------------------------
+Starting work on task 1289
+------------------------------
+Starting work on task 1290
+------------------------------
+Starting work on task 1291
+------------------------------
+Starting work on task 1292
+------------------------------
+Starting work on task 1293
+------------------------------
+Starting work on task 1294
+------------------------------
+Starting work on task 1295
+------------------------------
+Starting work on task 1296
+------------------------------
+Starting work on task 1297
+------------------------------
+Starting work on task 1298
+------------------------------
+Starting work on task 1299
+------------------------------
+Starting work on task 1300
+------------------------------
+Starting work on task 1301
+------------------------------
+Starting work on task 1302
+------------------------------
+Starting work on task 1303
+------------------------------
+Starting work on task 1304
+------------------------------
+Starting work on task 1305
+------------------------------
+Starting work on task 1306
+------------------------------
+Starting work on task 1307
+------------------------------
+Starting work on task 1308
+------------------------------
+Starting work on task 1309
+------------------------------
+Starting work on task 1310
+------------------------------
+Starting work on task 1311
+------------------------------
+Starting work on task 1312
+------------------------------
+Starting work on task 1313
+------------------------------
+Starting work on task 1314
+------------------------------
+Starting work on task 1315
+------------------------------
+Starting work on task 1316
+------------------------------
+Starting work on task 1317
+------------------------------
+Starting work on task 1318
+------------------------------
+Starting work on task 1319
+------------------------------
+Starting work on task 1320
+------------------------------
+Starting work on task 1321
+------------------------------
+Starting work on task 1322
+------------------------------
+Starting work on task 1323
+------------------------------
+Starting work on task 1324
+------------------------------
+Starting work on task 1325
+------------------------------
+Starting work on task 1326
+------------------------------
+Starting work on task 1327
+------------------------------
+Starting work on task 1328
+------------------------------
+Starting work on task 1329
+------------------------------
+Starting work on task 1330
+------------------------------
+Starting work on task 1331
+------------------------------
+Starting work on task 1332
+------------------------------
+Starting work on task 1333
+------------------------------
+Starting work on task 1334
+------------------------------
+Starting work on task 1335
+------------------------------
+Starting work on task 1336
+------------------------------
+Starting work on task 1337
+------------------------------
+Starting work on task 1338
+------------------------------
+Starting work on task 1339
+------------------------------
+Starting work on task 1340
+------------------------------
+Starting work on task 1341
+-----------------------------
+All tasks (total 1341) finished in 12:54:27.086083

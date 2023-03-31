@@ -132,7 +132,7 @@ def worker(
             runner(task, input_dataset[task])
     task_end = datetime.now()
     print("-----------------------------")
-    print("All tasks (total {}) finished in {}".format(task, task_end - task_start))
+    print("All tasks (in total {}) finished in {}".format(task, task_end - task_start))
 
 
 if __name__ == "__main__":
