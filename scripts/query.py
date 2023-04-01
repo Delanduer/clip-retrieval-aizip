@@ -16,6 +16,9 @@ def load_indices(indices_path):
             enable_mclip_option=False,
             use_jit=True,
             use_arrow=False,
+            provide_aesthetic_embeddings=False,
+            provide_safety_model=False,
+            provide_violence_detector=False,
         )
     )
 
