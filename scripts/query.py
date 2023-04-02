@@ -1,14 +1,17 @@
-from clip_retrieval.clip_back import load_clip_indices, KnnService, ClipOptions 
+from clip_retrieval.clip_back import load_clip_index, load_clip_indices, KnnService, ClipOptions 
 import pandas as pd
 
 META_DATA_COLS = ["url", "caption", "image_path"]
 
-def load_indices(indices_path):
-    return load_clip_indices(
+def get_knn_service(indices_path):
+    """
+    """
+    clip_dict = {}
+    single_index = load_clip_index(
         indices_paths=indices_path,
         clip_options=ClipOptions(
             indice_folder="",
-            clip_model="ViT-L/64",
+            clip_model="ViT-L/14",
             enable_hdf5=False,
             enable_faiss_memory_mapping=False,
             columns_to_return=META_DATA_COLS,
@@ -21,39 +24,41 @@ def load_indices(indices_path):
             provide_violence_detector=False,
         )
     )
-
+    
+    clip_dict["laion400m"] = single_index
+    return KnnService(
+        clip_resources=clip_dict
+    )
 
 if __name__ == "__main__":
     #
-    indices_path = ""
+    index_path = ""
     query_img_folder = ""
     num_results = 5
 
     #
-    indices_resource = load_indices(indices_path)
-    print("Loaded clip recource has following keys:\n{}".format(indices_resource.keys()))
-
-    #
-    knn_service = KnnService(
-        clip_resources=indices_resource
-    )
+    knn_service = get_knn_service(index_path)
+    
     results = knn_service.multi_img_query(
         image_folder=query_img_folder,
-        model="ViT-L/64",
+        model="ViT-L/14",
         modality="image",
         num_images=num_results,
         num_result_ids=num_results,
         indice_name=None, # meaningful only when multiple indices were loaded
-        deduplicate=True
+        deduplicate=True, # whether to eliminate duplicated results
     )
 
     #
-    res_table = pd.DataFrame(
-        [(e['image_path'], e['id'], e['similarity']) for e in results],
-        columns=["image_path", "id", "similarity"],
-    )
-    print("=======================")
-    print("======= results =======")
-    print(res_table)
+    assert results != None, f"For given images no query results can be retrieved. Pls check the given parameters."
+
+    for idx, result in results:
+        res_table = pd.DataFrame(
+            [(e['image_path'], e['id'], e['similarity']) for e in result],
+            columns=["image_path", "id", "similarity"],
+        )
+        print("====================================")
+        print("======= results for image {} =======".format(idx))
+        print(res_table)
 
     
