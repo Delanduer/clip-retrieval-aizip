@@ -375,37 +375,37 @@ class KnnService(Resource):
                 #print("Looping in raw search results for index: {}".format(idx))
                 nb_results = np.where(results[idx] == -1)[0]
 
-            if len(nb_results) > 0:
-                nb_results = nb_results[0]
-            else:
-                nb_results = len(results[idx])
-            result_indices = results[idx][:nb_results]
-            result_distances = distances[idx][:nb_results]
-            result_embeddings = embeddings[idx][:nb_results]
-            result_embeddings = normalized(result_embeddings)
-            local_indices_to_remove = self.post_filter(
-                clip_resource.safety_model,
-                result_embeddings,
-                deduplicate,
-                use_safety_model,
-                use_violence_detector,
-                clip_resource.violence_detector,
-            )
-            indices_to_remove = set()
-            #print("knn search to be removed indices len: {}".format(len(local_indices_to_remove)))
-            for local_index in local_indices_to_remove:
-                indices_to_remove.add(result_indices[local_index])
-            indices_filtered = []
-            distances_filtered = []
-            for ind, distance in zip(result_indices, result_distances):
-                if ind not in indices_to_remove:
-                    indices_to_remove.add(ind)
-                    indices_filtered.append(ind)
-                    distances_filtered.append(distance)
-            distance_outputs.append(distances_filtered)
-            indices_outputs.append(indices_filtered)
+                if len(nb_results) > 0:
+                    nb_results = nb_results[0]
+                else:
+                    nb_results = len(results[idx])
+                result_indices = results[idx][:nb_results]
+                result_distances = distances[idx][:nb_results]
+                result_embeddings = embeddings[idx][:nb_results]
+                result_embeddings = normalized(result_embeddings)
+                local_indices_to_remove = self.post_filter(
+                    clip_resource.safety_model,
+                    result_embeddings,
+                    deduplicate,
+                    use_safety_model,
+                    use_violence_detector,
+                    clip_resource.violence_detector,
+                )
+                indices_to_remove = set()
+                #print("knn search to be removed indices len: {}".format(len(local_indices_to_remove)))
+                for local_index in local_indices_to_remove:
+                    indices_to_remove.add(result_indices[local_index])
+                indices_filtered = []
+                distances_filtered = []
+                for ind, distance in zip(result_indices, result_distances):
+                    if ind not in indices_to_remove:
+                        indices_to_remove.add(ind)
+                        indices_filtered.append(ind)
+                        distances_filtered.append(distance)
+                distance_outputs.append(distances_filtered)
+                indices_outputs.append(indices_filtered)
 
-        return distance_outputs, indices_outputs
+            return distance_outputs, indices_outputs
 
     def map_to_metadata(self, indices, distances, num_images, metadata_provider, columns_to_return):
         """map the indices to the metadata"""
@@ -468,7 +468,7 @@ class KnnService(Resource):
         #print(model)
         if model == "ViT-B/32":
             queries = np.empty([1, 512])
-        elif model == "ViT-L/64":
+        elif model == "ViT-L/14":
             queries = np.empty([1, 768])
         else:
             print("model unknown")
