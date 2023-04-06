@@ -1,6 +1,7 @@
 from embedding_reader import EmbeddingReader
 import pandas as pd
 import numpy as np
+import argparse
 
 def main(
     embeddings_folder = None,
@@ -14,6 +15,9 @@ def main(
     print_debug_info = False,
     parquet_output_path = None,
 ):
+    """
+    main func to calculate the classification results.
+    """
     embedding_reader=EmbeddingReader(
         embeddings_folder = embeddings_folder,
         file_format = file_format,
@@ -21,8 +25,6 @@ def main(
         metadata_folder = metadata_folder,
         meta_columns = meta_columns,
     )
-    nb_vectors = embedding_reader.count
-    vec_dim = embedding_reader.dimension
     
     for embs, meta in embedding_reader(
         batch_size=embedding_read_batch_size,
@@ -56,10 +58,23 @@ def main(
 
 
 if __name__ == "__main__":
+   parser = argparse.ArgumentParser()
+
+   parser.add_argument("emb_folder", type=str,
+                       help="Abs. path of embedding folder.")
+   parser.add_argument("meta_folder", type=str,
+                       help="Abs. path of metadata folder.")
+   parser.add_argument("output_path", type=str,
+                       help="Abs. path for output parquet file.")
+   parser.add_argument("weight", type=str,
+                       help="Abs. path of classifier weight file.")
+   parser.add_argument("bias", type=str,
+                       help="Abs. path of classifier bias file.")
+   args=parser.parse_args()
    main(
-       embeddings_folder = "/home/junjie/test/multitaskgpupara/emb_laioni24_l14_b1024_700/img_emb",
-       metadata_folder = "/home/junjie/test/multitaskgpupara/emb_laioni24_l14_b1024_700/metadata",
-       parquet_output_path = "/home/junjie/test/multitaskgpupara/emb_laioni24_l14_b1024_700/classifier_res.parquet",
-       classifier_weight_file = "/home/junjie/git/clip-retrieval-aizip/classifier/l14_weight.csv",
-       classifier_bias_file = "/home/junjie/git/clip-retrieval-aizip/classifier/l14_bias.csv",
+       embeddings_folder = args.emb_folder,
+       metadata_folder = args.meta_folder,
+       parquet_output_path = args.output_path,
+       classifier_weight_file = args.weight,
+       classifier_bias_file = args.bias,
    )
