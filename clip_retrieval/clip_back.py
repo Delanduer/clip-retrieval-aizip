@@ -445,6 +445,7 @@ class KnnService(Resource):
                         encoded_img_list.append(encoded_img)
         return encoded_img_list
 
+    # TODO @Junjie, add interfaces: image_input/image_url_input/embedding_input
     def multi_img_query(
         self,
         image_folder=None,
@@ -453,11 +454,17 @@ class KnnService(Resource):
         num_images=100,
         num_result_ids=100,
         indice_name=None,
-        deduplicate=True
+        deduplicate=True,
+        use_safety_model=False,
+        use_violence_detector=False,
+        aesthetic_score=None,
+        aesthetic_weight=None,
     ):
         """implement the querying functionality of the knn service: from text and image to nearest neighbors"""
+        if image_folder is None:
+            raise ValueError("must fill an image embedding or a folder of images as input")
+        
         start_knn_query = time.perf_counter()
-
         if indice_name is None:
             indice_name = next(iter(self.clip_resources.keys()))
             print("use first key of indices as default: {0}".format(indice_name))
@@ -465,7 +472,6 @@ class KnnService(Resource):
         clip_resource = self.clip_resources[indice_name]
 
         """check model, drop is unknown"""
-        #print(model)
         if model == "ViT-B/32":
             queries = np.empty([1, 512])
         elif model == "ViT-L/14":
@@ -489,13 +495,18 @@ class KnnService(Resource):
                 num_images=num_images,
                 num_result_ids=num_result_ids,
                 indice_name=indice_name,
-                deduplicate=deduplicate
+                deduplicate=deduplicate,
+                use_mclip=False,
+                use_safety_model=use_safety_model,
+                use_violence_detector=use_violence_detector,
+                aesthetic_score=aesthetic_score,
+                aesthetic_weight=aesthetic_weight,
                 )
         else:
             import torch  # pylint: disable=import-outside-toplevel
             import clip  # pylint: disable=import-outside-toplevel
-            for idx, image_input in enumerate(image_input_list):
-                binary_data = base64.b64decode(image_input)
+            for idx, img in enumerate(image_input_list):
+                binary_data = base64.b64decode(img)
                 img_data = BytesIO(binary_data)
 
                 with IMAGE_PREPRO_TIME.time():
@@ -506,7 +517,11 @@ class KnnService(Resource):
                         image_features = clip_resource.model.encode_image(prepro)
                 image_features /= image_features.norm(dim=-1, keepdim=True)
                 query = image_features.cpu().detach().numpy().astype("float32")
-                #print("Compute Query outputs query with shape: {0}".format(query.shape))
+
+                if clip_resource.aesthetic_embeddings is not None and aesthetic_score is not None:
+                    aesthetic_embedding = clip_resource.aesthetic_embeddings[aesthetic_score]
+                    query = query + aesthetic_embedding * aesthetic_weight
+                    query = query / np.linalg.norm(query)
 
                 if idx==0:
                     queries = query
@@ -521,8 +536,8 @@ class KnnService(Resource):
                 num_result_ids=num_result_ids,
                 clip_resource=clip_resource,
                 deduplicate=deduplicate,
-                use_safety_model=False,
-                use_violence_detector=False,
+                use_safety_model=use_safety_model,
+                use_violence_detector=use_violence_detector,
             )
 
             results_arr = []
@@ -534,8 +549,7 @@ class KnnService(Resource):
                     results = self.map_to_metadata(
                         indices_arr[idx], distances_arr[idx], num_images, clip_resource.metadata_provider, clip_resource.columns_to_return
                     )
-                    results_arr.append(results) 
-                    #print("len of result: {0} for index {1} in final results arry".format(len(results), idx))
+                    results_arr.append(results)
 
             end_knn_query = time.perf_counter()
             LOGGER.info(f'Total duration for query: {end_knn_query-start_knn_query}')
@@ -995,10 +1009,10 @@ def load_clip_index(clip_options):
     """load the clip index"""
     import torch  # pylint: disable=import-outside-toplevel
     from clip_retrieval.load_clip import load_clip, get_tokenizer  # pylint: disable=import-outside-toplevel
-
+    
+    #load_clip_start = time.perf_counter()
     #start_time = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    #load_clip_start = time.perf_counter()
     model, preprocess = load_clip(clip_options.clip_model, use_jit=clip_options.use_jit, device=device)
     #load_clip_end = time.perf_counter()
     tokenizer = get_tokenizer(clip_options.clip_model)
