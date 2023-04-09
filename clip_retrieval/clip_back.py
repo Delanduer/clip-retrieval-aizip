@@ -449,7 +449,7 @@ class KnnService(Resource):
     def multi_img_query(
         self,
         image_folder=None,
-        model=None,
+        model="ViT-L/14",
         modality="image",
         num_images=100,
         num_result_ids=100,
