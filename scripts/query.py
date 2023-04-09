@@ -4,7 +4,7 @@ import argparse
 
 META_DATA_COLS = ["url", "caption", "image_path"]
 
-def get_knn_service(index_path=str, name=str, model="ViT-L/14"):
+def get_knn_service(args=argparse.Namespace, name=str):
     """
     get knn instance based on given index.
 
@@ -13,10 +13,10 @@ def get_knn_service(index_path=str, name=str, model="ViT-L/14"):
     """
     clip_dict = {}
     single_index = load_clip_index(
-        indices_paths=index_path,
+        indices_paths=args.index_path,
         clip_options=ClipOptions(
             indice_folder="",
-            clip_model=model,
+            clip_model=args.model,
             enable_hdf5=False,
             enable_faiss_memory_mapping=False,
             columns_to_return=META_DATA_COLS,
@@ -24,9 +24,9 @@ def get_knn_service(index_path=str, name=str, model="ViT-L/14"):
             enable_mclip_option=False,
             use_jit=True,
             use_arrow=False,
-            provide_aesthetic_embeddings=False,
-            provide_safety_model=False,
-            provide_violence_detector=False,
+            provide_aesthetic_embeddings=args.aesthetic_embeddings if args.aesthetic_embeddings else False,
+            provide_safety_model=args.safety_model if args.safety_model else False,
+            provide_violence_detector=args.violence_detector if args.violence_detector else False,
         )
     )
     
@@ -45,13 +45,16 @@ if __name__ == "__main__":
                         help="number of output results.")
     parser.add_argument("--model", type=str,
                         help="model used in index, ViT-B/32 or ViT-L/14")
+    parser.add_argument("--aesthetic_embeddings", type=bool,
+                        help="whether to add aesthetics")
+    parser.add_argument("--safety_model", type=bool,
+                        help="whether to filter out unsafe items")
+    parser.add_argument("--violence_detector", type=bool,
+                        help="whether to filter out items with violence content")
     
     args = parser.parse_args()
     #
-    if args.model:
-        knn_service = get_knn_service(args.index_path, "laion400m", args.model)
-    else:
-        knn_service = get_knn_service(args.index_path, "laion400m")
+    knn_service = get_knn_service(args=args, name="laion400m")
     
     results = knn_service.multi_img_query(
         image_folder=args.query_folder,
@@ -61,6 +64,10 @@ if __name__ == "__main__":
         num_result_ids=args.num,
         indice_name=None, # meaningful only when multiple indices were loaded
         deduplicate=True, # whether to eliminate duplicated results
+        use_safety_model=False, # requires "safety_model" set to True
+        use_violence_detector=False, # requires "violence_detector" set to True
+        aesthetic_score=None, # requires "aesthetic_embeddings" set to True
+        aesthetic_weight=None, # requires "aesthetic_embeddings" set to True
     )
 
     #
