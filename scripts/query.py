@@ -72,7 +72,7 @@ if __name__ == "__main__":
     #
     assert results != None, f"For given images no query results can be retrieved. Pls check the given parameters."
 
-    for idx, result in results:
+    for idx, result in enumerate(results):
         res_table = pd.DataFrame(
             [(e['image_path'], e['id'], e['similarity']) for e in result],
             columns=["image_path", "id", "similarity"],
