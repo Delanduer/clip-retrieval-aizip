@@ -13,9 +13,8 @@ def get_knn_service(args=argparse.Namespace, name=str):
     """
     clip_dict = {}
     single_index = load_clip_index(
-        indices_paths=args.index_path,
         clip_options=ClipOptions(
-            indice_folder="",
+            indice_folder=args.index_path,
             clip_model=args.model,
             enable_hdf5=False,
             enable_faiss_memory_mapping=False,
