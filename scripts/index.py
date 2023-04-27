@@ -1,5 +1,6 @@
 import argparse
 from clip_retrieval.clip_index import clip_index
+import time
 
 def callindex():
     clip_index(
@@ -26,4 +27,7 @@ if __name__=="__main__":
                         help="available memories.")
     
     args=parser.parse_args()
+    build_start=time.perf_counter()
     callindex(args)
+    build_end=time.perf_counter()
+    print("Building index duration: {}".format(build_end-build_start))
