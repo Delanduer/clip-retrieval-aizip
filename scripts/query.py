@@ -1,6 +1,7 @@
 from clip_retrieval.clip_back import load_clip_index, load_clip_indices, KnnService, ClipOptions 
 import pandas as pd
 import argparse
+import time
 
 META_DATA_COLS = ["url", "caption", "image_path"]
 
@@ -52,9 +53,11 @@ if __name__ == "__main__":
                         help="whether to filter out items with violence content")
     
     args = parser.parse_args()
-    #
-    knn_service = get_knn_service(args=args, name="laion400m")
     
+    knn_load_start = time.perf_counter()
+    knn_service = get_knn_service(args=args, name="laion400m")
+    knn_load_end = time.perf_counter()
+    print("Index loading duration: {}".format(knn_load_end-knn_load_start))
     results = knn_service.multi_img_query(
         image_folder=args.query_folder,
         model=args.model if args.model else "ViT-L/14",
@@ -68,8 +71,9 @@ if __name__ == "__main__":
         aesthetic_score=None, # requires "aesthetic_embeddings" set to True
         aesthetic_weight=None, # requires "aesthetic_embeddings" set to True
     )
+    knn_query_end = time.perf_counter()
+    print("Actual query duration: {}".format(knn_query_end-knn_load_end))
 
-    #
     assert results != None, f"For given images no query results can be retrieved. Pls check the given parameters."
 
     for idx, result in enumerate(results):
