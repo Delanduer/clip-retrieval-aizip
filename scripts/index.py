@@ -2,7 +2,7 @@ import argparse
 from clip_retrieval.clip_index import clip_index
 import time
 
-def callindex():
+def callindex(args):
     clip_index(
         embeddings_folder=args.emb_path,
         index_folder=args.out_path,
