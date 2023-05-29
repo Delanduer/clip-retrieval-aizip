@@ -609,10 +609,10 @@ class KnnService(Resource):
     
     def classifier_img_query(
         self,
-        cls_weight_csv, # in default sep is empty space
-        cls_weight_emb, # in default sep is empty space
-        cls_bias_csv,
-        cls_bias_emb,
+        cls_weight_csv=None, # in default sep is empty space
+        cls_weight_emb=None, # in default sep is empty space
+        cls_bias_csv=None,
+        cls_bias_emb=None,
         num_images=10,
         num_result_ids=10,
         indice_name=None,
@@ -623,10 +623,10 @@ class KnnService(Resource):
         aesthetic_weight=None,
         threshold=0.0,
     ):
-        def getValidIdx(res_list, thres):
+        def getValidIdx(res_list, thres, bias):
             valid_idx_rev = 0
             for idx, res in enumerate(reversed(res_list),1):
-                if res['similarity'] >= thres:
+                if res['similarity'] + bias >= thres:
                     break
                 else:
                     valid_idx_rev = idx
@@ -641,7 +641,7 @@ class KnnService(Resource):
             )
             weight_emb /= np.linalg.norm(weight_emb, keepdims=True)
         elif cls_weight_emb is not None:
-            pass
+            weight_emb = cls_weight_emb
         else:
             print("No valid input for class weights can be found. Exit.")
             exit()
@@ -652,10 +652,10 @@ class KnnService(Resource):
                 delimiter=' '   # default delimiter is empty space
             )
         elif cls_bias_emb is not None:
-            pass
+            bias = cls_bias_emb
         else:
-            print("No valid input for class bias can be found. Exit.")
-            exit()
+            print("No valid input for class bias can be found. Take default value 0.")
+            bias = 0
 
         raw_q_res = self.query(
             embedding_input=weight_emb,
@@ -679,13 +679,13 @@ class KnnService(Resource):
         elif len(raw_q_res) > 100000:
             # take half for validation
             half_idx = int((len(raw_q_res)-1)/2)
-            if raw_q_res[half_idx] >= threshold:
-                valid_idx = len(raw_q_res) - getValidIdx(raw_q_res[half_idx:], threshold)
+            if raw_q_res[half_idx]['similarity'] + bias >= threshold:
+                valid_idx = len(raw_q_res) - getValidIdx(raw_q_res[half_idx:], threshold, bias)
             else:
-                valid_idx = half_idx - getValidIdx(raw_q_res[:half_idx], threshold)
+                valid_idx = half_idx - getValidIdx(raw_q_res[:half_idx], threshold, bias)
         else:
-            valid_idx = len(raw_q_res) - getValidIdx(raw_q_res, threshold)
-
+            valid_idx = len(raw_q_res) - getValidIdx(raw_q_res, threshold, bias)
+        print("Duration for filtering query results: {}".format(time.perf_counter()-start_filter))
         print("Total duration for query with classifier: {}".format(time.perf_counter()-start_t))
         return raw_q_res[:valid_idx]
 
