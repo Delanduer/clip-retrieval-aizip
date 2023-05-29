@@ -449,6 +449,8 @@ class KnnService(Resource):
     def multi_img_query(
         self,
         image_folder=None,
+        image_urls=None,
+        embeddings=None,
         model="ViT-L/14",
         modality="image",
         num_images=100,
@@ -461,8 +463,8 @@ class KnnService(Resource):
         aesthetic_weight=None,
     ):
         """implement the querying functionality of the knn service: from text and image to nearest neighbors"""
-        if image_folder is None:
-            raise ValueError("must fill an image embedding or a folder of images as input")
+        if image_folder is None and image_urls is None and embeddings is None:
+            raise ValueError("must fill embeddings or an img folder of a list of urls as input")
         
         start_knn_query = time.perf_counter()
         if indice_name is None:
@@ -481,16 +483,114 @@ class KnnService(Resource):
             return []
 
         """check input image folder"""
-        image_input_list = self.create_img_list(image_folder)
+        if image_folder is not None:
+            image_inputs = self.create_img_list(image_folder)
+            if image_inputs is None:
+                print("Empty img input list, check if the input folders are empty.")
+                return []
+            elif len(image_inputs)==1:
+                print("Only one image detected, use single query instead.")
+                return self.query(
+                    image_input=image_inputs[0],
+                    modality=modality,
+                    num_images=num_images,
+                    num_result_ids=num_result_ids,
+                    indice_name=indice_name,
+                    deduplicate=deduplicate,
+                    use_mclip=False,
+                    use_safety_model=use_safety_model,
+                    use_violence_detector=use_violence_detector,
+                    aesthetic_score=aesthetic_score,
+                    aesthetic_weight=aesthetic_weight,
+                    )
+            else:
+                import torch  # pylint: disable=import-outside-toplevel
+                import clip  # pylint: disable=import-outside-toplevel
+                for idx, img in enumerate(image_inputs):
+                    binary_data = base64.b64decode(img)
+                    img_data = BytesIO(binary_data)
 
-        """compute the query embedding"""
-        if image_input_list is None:
-            print("Empty img input list, check input folder.")
+                    with IMAGE_PREPRO_TIME.time():
+                        img = Image.open(img_data)
+                        prepro = clip_resource.preprocess(img).unsqueeze(0).to(clip_resource.device)
+                    with IMAGE_CLIP_INFERENCE_TIME.time():
+                        with torch.no_grad():
+                            image_features = clip_resource.model.encode_image(prepro)
+                    image_features /= image_features.norm(dim=-1, keepdim=True)
+                    query = image_features.cpu().detach().numpy().astype("float32")
+
+                    if clip_resource.aesthetic_embeddings is not None and aesthetic_score is not None:
+                        aesthetic_embedding = clip_resource.aesthetic_embeddings[aesthetic_score]
+                        query = query + aesthetic_embedding * aesthetic_weight
+                        query = query / np.linalg.norm(query)
+
+                    if idx==0:
+                        queries = query
+                    else:
+                        queries = np.append(queries, query, axis=0)
+
+                print("Shape of query: {0}".format(queries.shape))
+                    
+                distances_arr, indices_arr = self.knn_search(
+                    queries,
+                    modality=modality,
+                    num_result_ids=num_result_ids,
+                    clip_resource=clip_resource,
+                    deduplicate=deduplicate,
+                    use_safety_model=use_safety_model,
+                    use_violence_detector=use_violence_detector,
+                )
+
+                results_arr = []
+                for idx in range(0, len(distances_arr)):
+                    if len(distances_arr[idx]) == 0 or len(indices_arr[idx]) == 0:
+                        results_arr.append([])
+                        print("For idx: {0} in raw search there is either no distance or no index returned.".format(idx))
+                    else:
+                        results = self.map_to_metadata(
+                            indices_arr[idx], distances_arr[idx], num_images, clip_resource.metadata_provider, clip_resource.columns_to_return
+                        )
+                        results_arr.append(results)
+
+                end_knn_query = time.perf_counter()
+                LOGGER.info(f'Total duration for query: {end_knn_query-start_knn_query}')
+                return results_arr
+        elif image_urls is not None:
+            image_inputs = image_urls
+            #ToDo add implementation for image_urls
             return []
-        elif len(image_input_list)==1:
-            print("Only one image detected, use single query instead.")
-            return self.query(
-                image_input=image_input_list[0],
+        elif embeddings is not None:
+            image_inputs = embeddings 
+            #ToDo add implmentation for embeddings
+            return []      
+
+    def multi_query(
+        self,
+        text_input=None,
+        image_input_list=None,
+        image_url_input_list=None,
+        embedding_input_list=None,
+        modality="image",
+        num_images=100,
+        num_result_ids=100,
+        indice_name=None,
+        use_mclip=False,
+        deduplicate=True,
+        use_safety_model=False,
+        use_violence_detector=False,
+        aesthetic_score=None,
+        aesthetic_weight=None,  
+    ):
+        """
+        central interface for multiple inputs, with compatibility to single input
+        """
+        text_result = []
+        if text_input is None and image_input_list is None and image_url_input_list is None and embedding_input_list is None:
+            raise ValueError("must fill one of text, image and image url input")
+        
+        if text_input is not None and text_input != "":
+            text_result = self.query(
+                text_input=text_input,
                 modality=modality,
                 num_images=num_images,
                 num_result_ids=num_result_ids,
@@ -502,58 +602,92 @@ class KnnService(Resource):
                 aesthetic_score=aesthetic_score,
                 aesthetic_weight=aesthetic_weight,
                 )
-        else:
-            import torch  # pylint: disable=import-outside-toplevel
-            import clip  # pylint: disable=import-outside-toplevel
-            for idx, img in enumerate(image_input_list):
-                binary_data = base64.b64decode(img)
-                img_data = BytesIO(binary_data)
+        elif image_input_list is not None or image_url_input_list is not None or embedding_input_list is not None:
+            pass
 
-                with IMAGE_PREPRO_TIME.time():
-                    img = Image.open(img_data)
-                    prepro = clip_resource.preprocess(img).unsqueeze(0).to(clip_resource.device)
-                with IMAGE_CLIP_INFERENCE_TIME.time():
-                    with torch.no_grad():
-                        image_features = clip_resource.model.encode_image(prepro)
-                image_features /= image_features.norm(dim=-1, keepdim=True)
-                query = image_features.cpu().detach().numpy().astype("float32")
-
-                if clip_resource.aesthetic_embeddings is not None and aesthetic_score is not None:
-                    aesthetic_embedding = clip_resource.aesthetic_embeddings[aesthetic_score]
-                    query = query + aesthetic_embedding * aesthetic_weight
-                    query = query / np.linalg.norm(query)
-
-                if idx==0:
-                    queries = query
+        #return results_arr
+    
+    def classifier_img_query(
+        self,
+        cls_weight_csv, # in default sep is empty space
+        cls_weight_emb, # in default sep is empty space
+        cls_bias_csv,
+        cls_bias_emb,
+        num_images=10,
+        num_result_ids=10,
+        indice_name=None,
+        deduplicate=True,
+        use_safety_model=False,
+        use_violence_detector=False,
+        aesthetic_score=None,
+        aesthetic_weight=None,
+        threshold=0.0,
+    ):
+        def getValidIdx(res_list, thres):
+            valid_idx_rev = 0
+            for idx, res in enumerate(reversed(res_list),1):
+                if res['similarity'] >= thres:
+                    break
                 else:
-                    queries = np.append(queries, query, axis=0)
-
-            print("Shape of query: {0}".format(queries.shape))
-                
-            distances_arr, indices_arr = self.knn_search(
-                queries,
-                modality=modality,
-                num_result_ids=num_result_ids,
-                clip_resource=clip_resource,
-                deduplicate=deduplicate,
-                use_safety_model=use_safety_model,
-                use_violence_detector=use_violence_detector,
+                    valid_idx_rev = idx
+            return valid_idx_rev
+        
+        import time
+        start_t = time.perf_counter()
+        if cls_weight_csv is not None:
+            weight_emb = np.loadtxt(
+                cls_weight_csv,
+                delimiter=' '   # default delimiter is empty space
             )
+            weight_emb /= np.linalg.norm(weight_emb, keepdims=True)
+        elif cls_weight_emb is not None:
+            pass
+        else:
+            print("No valid input for class weights can be found. Exit.")
+            exit()
+        
+        if cls_bias_csv is not None:
+            bias = np.loadtxt(
+                cls_bias_csv,
+                delimiter=' '   # default delimiter is empty space
+            )
+        elif cls_bias_emb is not None:
+            pass
+        else:
+            print("No valid input for class bias can be found. Exit.")
+            exit()
 
-            results_arr = []
-            for idx in range(0, len(distances_arr)):
-                if len(distances_arr[idx]) == 0 or len(indices_arr[idx]) == 0:
-                    results_arr.append([])
-                    print("For idx: {0} in raw search there is either no distance or no index returned.".format(idx))
-                else:
-                    results = self.map_to_metadata(
-                        indices_arr[idx], distances_arr[idx], num_images, clip_resource.metadata_provider, clip_resource.columns_to_return
-                    )
-                    results_arr.append(results)
+        raw_q_res = self.query(
+            embedding_input=weight_emb,
+            modality="image",
+            num_images=num_images,
+            num_result_ids=num_result_ids,
+            indice_name=indice_name,
+            use_mclip=False,
+            deduplicate=deduplicate,
+            use_safety_model=use_safety_model,
+            use_violence_detector=use_violence_detector,
+            aesthetic_score=aesthetic_score,
+            aesthetic_weight=aesthetic_weight,  
+        )
 
-            end_knn_query = time.perf_counter()
-            LOGGER.info(f'Total duration for query: {end_knn_query-start_knn_query}')
-            return results_arr
+        start_filter = time.perf_counter()
+        valid_idx = 0
+        if len(raw_q_res) == 0:
+            print("Enpty results returned...")
+            return []
+        elif len(raw_q_res) > 100000:
+            # take half for validation
+            half_idx = int((len(raw_q_res)-1)/2)
+            if raw_q_res[half_idx] >= threshold:
+                valid_idx = len(raw_q_res) - getValidIdx(raw_q_res[half_idx:], threshold)
+            else:
+                valid_idx = half_idx - getValidIdx(raw_q_res[:half_idx], threshold)
+        else:
+            valid_idx = len(raw_q_res) - getValidIdx(raw_q_res, threshold)
+
+        print("Total duration for query with classifier: {}".format(time.perf_counter()-start_t))
+        return raw_q_res[:valid_idx]
 
     def query(
         self,
