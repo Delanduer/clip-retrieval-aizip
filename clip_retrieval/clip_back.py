@@ -1306,6 +1306,73 @@ def clip_back(
     LOGGER.info("starting!")
     app.run(host="0.0.0.0", port=port, debug=False)
 
+# reorder_metadata_by_ivf_index allows faster data retrieval of knn results by re-ordering the metadata by the ivf clusters
+def clip_back_test(
+    index_folder="",
+    host="0.0.0.0",
+    port=1234,
+    enable_hdf5=False,
+    enable_faiss_memory_mapping=False,
+    columns_to_return=None,
+    reorder_metadata_by_ivf_index=False,
+    default_backend=None,
+    url_column="url",
+    enable_mclip_option=True,
+    clip_model="ViT-B/32",
+    use_jit=True,
+    use_arrow=False,
+    provide_safety_model=False,
+    provide_violence_detector=False,
+    provide_aesthetic_embeddings=True,
+):
+    """main entry point of clip back, start the endpoints"""
+    print("starting boot of clip back")
+    if columns_to_return is None:
+        columns_to_return = ["url", "image_path", "caption", "NSFW"]
+    clip_resources = load_clip_index(
+        clip_options=ClipOptions(
+            indice_folder=index_folder,
+            clip_model=clip_model,
+            enable_hdf5=enable_hdf5,
+            enable_faiss_memory_mapping=enable_faiss_memory_mapping,
+            columns_to_return=columns_to_return,
+            reorder_metadata_by_ivf_index=reorder_metadata_by_ivf_index,
+            enable_mclip_option=enable_mclip_option,
+            use_jit=use_jit,
+            use_arrow=use_arrow,
+            provide_safety_model=provide_safety_model,
+            provide_violence_detector=provide_violence_detector,
+            provide_aesthetic_embeddings=provide_aesthetic_embeddings,
+        ),
+    )
+    print("indices loaded")
 
+    app = Flask(__name__)
+    app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {"/metrics": make_wsgi_app()})
+    from .clip_front import add_static_endpoints  # pylint: disable=import-outside-toplevel
+
+    add_static_endpoints(app, default_backend, None, url_column)
+
+    api = Api(app)
+    api.add_resource(MetricsSummary, "/metrics-summary")
+    api.add_resource(IndicesList, "/indices-list", resource_class_kwargs={"indices": list(clip_resources.keys())})
+    api.add_resource(
+        MetadataService,
+        "/metadata",
+        resource_class_kwargs={
+            "clip_resources": clip_resources,
+        },
+    )
+    api.add_resource(
+        KnnService,
+        "/knn-service",
+        resource_class_kwargs={
+            "clip_resources": clip_resources,
+        },
+    )
+    CORS(app)
+    LOGGER.info("starting!")
+    app.run(host=host, port=port, debug=False)
+    
 if __name__ == "__main__":
     fire.Fire(clip_back)
