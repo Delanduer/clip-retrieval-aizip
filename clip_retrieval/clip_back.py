@@ -1326,7 +1326,7 @@ def clip_back_test(
     provide_aesthetic_embeddings=True,
 ):
     """main entry point of clip back, start the endpoints"""
-    print("starting boot of clip back")
+    print("starting boot of clip back local test.")
     if columns_to_return is None:
         columns_to_return = ["url", "image_path", "caption", "NSFW"]
     clip_resources = load_clip_index(
