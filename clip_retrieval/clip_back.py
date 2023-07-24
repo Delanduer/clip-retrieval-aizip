@@ -1329,7 +1329,7 @@ def clip_back_test(
     print("starting boot of clip back local test.")
     if columns_to_return is None:
         columns_to_return = ["url", "image_path", "caption", "NSFW"]
-    clip_resources = load_clip_index(
+    clip_resource = load_clip_index(
         clip_options=ClipOptions(
             indice_folder=index_folder,
             clip_model=clip_model,
@@ -1345,7 +1345,9 @@ def clip_back_test(
             provide_aesthetic_embeddings=provide_aesthetic_embeddings,
         ),
     )
-    print("indices loaded")
+    clip_resources={}
+    clip_resources[index_folder] = clip_resource
+    print("indices loaded, using key {}.".format(index_folder))
 
     app = Flask(__name__)
     app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {"/metrics": make_wsgi_app()})
@@ -1355,7 +1357,7 @@ def clip_back_test(
 
     api = Api(app)
     api.add_resource(MetricsSummary, "/metrics-summary")
-    api.add_resource(IndicesList, "/indices-list", resource_class_kwargs={"indices": list(clip_resources.keys())})
+    api.add_resource(IndicesList, "/indices-list", resource_class_kwargs={"indices": list(index_folder)})
     api.add_resource(
         MetadataService,
         "/metadata",
