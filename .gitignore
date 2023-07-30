@@ -16,7 +16,9 @@ indices_paths.json
 test_folder
 build
 dist
+dist_old
 wandb
 .pexing
 *.tgz
 *.pex
+**/dist
