@@ -21,5 +21,4 @@ wandb
 .pexing
 *.tgz
 *.pex
-**/dist
 test_index_local
