@@ -11,8 +11,6 @@ from aizip_clip_server import clip_back_fastapi
 columns = ["url", "caption", "image_path"]
 app = clip_back_fastapi(
     index_folder=r"C:\\Users\\wjjbf\\Documents\\Git\\clip-retrieval-aizip\\test_index_local\\laion400m_index1",
-    host="127.0.0.1",
-    port=13005,
     columns_to_return=columns,
     reorder_metadata_by_ivf_index=False,
     enable_mclip_option=True,

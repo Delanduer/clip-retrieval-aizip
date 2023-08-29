@@ -1300,8 +1300,6 @@ class IndicesListFastApi(fastResource):
 
 def clip_back_fastapi(
     index_folder="",
-    host="0.0.0.0",
-    port=1234,
     enable_hdf5=False,
     enable_faiss_memory_mapping=False,
     columns_to_return=None,
