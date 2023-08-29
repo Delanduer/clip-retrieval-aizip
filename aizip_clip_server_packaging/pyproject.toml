@@ -29,7 +29,9 @@ dependencies = [
     "clip_retrieval",
     "fastapi_restful",
     "fastapi",
-    "faiss-cpu",
+    "faiss-gpu",
+    "python-multipart",
+    "uvicorn",
 ]
 
 [project.urls]
