@@ -3,7 +3,7 @@
 
 from typing import Callable, Dict, Any, List
 from flask import request, make_response
-from flask_restful import Resource, Api
+from flask_restful import Resource
 import faiss
 from collections import defaultdict
 from multiprocessing.pool import ThreadPool
@@ -12,7 +12,6 @@ from io import BytesIO
 from PIL import Image
 import base64
 import os
-import fire
 from pathlib import Path
 import pandas as pd
 import urllib
@@ -89,7 +88,7 @@ def convert_metadata_to_base64(meta):
             meta["image"] = img_str
 
 
-class Health(Resource):
+class Health(fastResource):
     def get(self):
         return "ok"
 
@@ -612,28 +611,20 @@ def load_clip_indices(
             raise ValueError("Unknown type for indice_folder")
         clip_resources[name] = load_clip_index(clip_options)
         #print("Name {0} add to clip resources".format(name))
-    #print("Clip option: {0}".format(clip_options))
     return clip_resources
 
-from fastapi import Depends, FastAPI, Header, HTTPException, status, Security, Form
-#from fastapi.security import OAuth2PasswordBearer
+from fastapi import Depends, FastAPI, HTTPException, status, Security, Form
+# using fastapi api key. Constrains: 
+# - together with pydantic basemodel it forces to use file format in request
+# ToDo: consider using other authtification 
 from fastapi.security.api_key import APIKeyHeader, APIKeyQuery
-#oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")  # use token authentication
 
 api_key_header = APIKeyHeader(name="aizip-token", auto_error=False)
 api_key_query = APIKeyQuery(name="aizip-token", auto_error=False)
-#api_keys = ["akljnv13bvi2vfo0b0bw"]
-    #def api_key_auth(self, api_key: str = Depends(oauth2_scheme)):
-    #    if api_key not in self.api_keys:
-    #        raise HTTPException(
-    #            status_code=status.HTTP_401_UNAUTHORIZED,
-    #            detail="Forbidden"
-    #        )
 
 def get_api_key(
-    api_keys_allowed: list=["akljnv13bvi2vfo0b0bw"],
+    api_keys_allowed: list=["akljnv13bvi2vfo0b0bw"], # define allowed key list
     api_key_header: str = Security(api_key_header)
-    #api_key_query: str= Security(api_key_query)
 ):
     print("Received api key: {}".format(api_key_header))
     if api_key_header not in api_keys_allowed:
@@ -646,7 +637,9 @@ def get_api_key(
         print("Key valid.")
         return api_key_header
 
+
 def form_body(cls):
+    """require an extra func to form data to meet the required content type in requests, when using files="""
     cls.__signature__ = cls.__signature__.replace(
         parameters=[
             arg.replace(default=Form(...))
@@ -887,7 +880,7 @@ class KnnServiceFastApi(fastResource):
 
         return results
 
-    def create_img_list(self, folder_path):
+    def __create_img_list(self, folder_path):
         """use base64 to encode images from given folder, accepted format .jpg, .png"""
         import base64
         encoded_img_list = []
@@ -906,11 +899,90 @@ class KnnServiceFastApi(fastResource):
                         encoded_img_list.append(encoded_img)
         return encoded_img_list
 
-    # TODO @Junjie, add interfaces: image_input/image_url_input/embedding_input
-    def multi_img_query(
+    def __multi_img_query_raw(
+        self,
+        image_inputs,
+        indice_name,
+        modality,
+        model,
+        num_result_ids,
+        num_images,
+        deduplicate,
+        use_safety_model,
+        use_violence_detector,
+        aesthetic_score,
+        aesthetic_weight,    
+    ):
+        """check model, drop is unknown"""
+        if model == "ViT-B/32":
+            queries = np.empty([1, 512])
+        elif model == "ViT-L/14":
+            queries = np.empty([1, 768])
+        else:
+            print("model unknown")
+            return []
+        
+        start_knn_query = time.perf_counter()
+
+        clip_resource = self.clip_resources[indice_name]
+
+        # wrap it into single function
+        import torch  # pylint: disable=import-outside-toplevel
+        for idx, img in enumerate(image_inputs):
+            binary_data = base64.b64decode(img)
+            img_data = BytesIO(binary_data)
+
+            with IMAGE_PREPRO_TIME.time():
+                img = Image.open(img_data)
+                prepro = clip_resource.preprocess(img).unsqueeze(0).to(clip_resource.device)
+            with IMAGE_CLIP_INFERENCE_TIME.time():
+                with torch.no_grad():
+                    image_features = clip_resource.model.encode_image(prepro)
+            image_features /= image_features.norm(dim=-1, keepdim=True)
+            query = image_features.cpu().detach().numpy().astype("float32")
+
+            if clip_resource.aesthetic_embeddings is not None and aesthetic_score is not None:
+                aesthetic_embedding = clip_resource.aesthetic_embeddings[aesthetic_score]
+                query = query + aesthetic_embedding * aesthetic_weight
+                query = query / np.linalg.norm(query)
+
+            if idx==0:
+                queries = query
+            else:
+                queries = np.append(queries, query, axis=0)
+
+        print("Shape of query: {0}".format(queries.shape))
+            
+        distances_arr, indices_arr = self.knn_search(
+            queries,
+            modality=modality,
+            num_result_ids=num_result_ids,
+            clip_resource=clip_resource,
+            deduplicate=deduplicate,
+            use_safety_model=use_safety_model,
+            use_violence_detector=use_violence_detector,
+        )
+
+        results_arr = []
+        for idx in range(0, len(distances_arr)):
+            if len(distances_arr[idx]) == 0 or len(indices_arr[idx]) == 0:
+                results_arr.append([])
+                print("For idx: {0} in raw search there is either no distance or no index returned.".format(idx))
+            else:
+                results = self.map_to_metadata(
+                    indices_arr[idx], distances_arr[idx], num_images, clip_resource.metadata_provider, clip_resource.columns_to_return
+                )
+                results_arr.append(results)
+
+        end_knn_query = time.perf_counter()
+        LOGGER.info(f'Total duration for query: {end_knn_query-start_knn_query}')
+        return results_arr
+
+    def batch_query_wrapper(
         self,
         image_folder=None,
-        image_urls=None,
+        image_bytes=None, # list of encoded bytes of images
+        image_urls=None, # currently not supported yet
         embeddings=None,
         model="ViT-L/14",
         modality="image",
@@ -924,28 +996,16 @@ class KnnServiceFastApi(fastResource):
         aesthetic_weight=None,
     ):
         """implement the querying functionality of the knn service: from text and image to nearest neighbors"""
-        if image_folder is None and image_urls is None and embeddings is None:
+        if image_folder is None and image_urls is None and embeddings is None and image_bytes is None:
             raise ValueError("must fill embeddings or an img folder of a list of urls as input")
         
-        start_knn_query = time.perf_counter()
         if indice_name is None:
             indice_name = next(iter(self.clip_resources.keys()))
             print("use first key of indices as default: {0}".format(indice_name))
 
-        clip_resource = self.clip_resources[indice_name]
-
-        """check model, drop is unknown"""
-        if model == "ViT-B/32":
-            queries = np.empty([1, 512])
-        elif model == "ViT-L/14":
-            queries = np.empty([1, 768])
-        else:
-            print("model unknown")
-            return []
-
         """check input image folder"""
         if image_folder is not None:
-            image_inputs = self.create_img_list(image_folder)
+            image_inputs = self.__create_img_list(image_folder)
             if image_inputs is None:
                 print("Empty img input list, check if the input folders are empty.")
                 return []
@@ -965,107 +1025,87 @@ class KnnServiceFastApi(fastResource):
                     aesthetic_weight=aesthetic_weight,
                     )
             else:
-                import torch  # pylint: disable=import-outside-toplevel
-                for idx, img in enumerate(image_inputs):
-                    binary_data = base64.b64decode(img)
-                    img_data = BytesIO(binary_data)
-
-                    with IMAGE_PREPRO_TIME.time():
-                        img = Image.open(img_data)
-                        prepro = clip_resource.preprocess(img).unsqueeze(0).to(clip_resource.device)
-                    with IMAGE_CLIP_INFERENCE_TIME.time():
-                        with torch.no_grad():
-                            image_features = clip_resource.model.encode_image(prepro)
-                    image_features /= image_features.norm(dim=-1, keepdim=True)
-                    query = image_features.cpu().detach().numpy().astype("float32")
-
-                    if clip_resource.aesthetic_embeddings is not None and aesthetic_score is not None:
-                        aesthetic_embedding = clip_resource.aesthetic_embeddings[aesthetic_score]
-                        query = query + aesthetic_embedding * aesthetic_weight
-                        query = query / np.linalg.norm(query)
-
+                return self.__multi_img_query_raw(
+                    image_inputs=image_inputs,
+                    indice_name=indice_name,
+                    model=model,
+                    modality=modality,
+                    num_images=num_images,
+                    num_result_ids=num_result_ids,
+                    deduplicate=deduplicate,
+                    use_safety_model=use_safety_model,
+                    use_violence_detector=use_violence_detector,
+                    aesthetic_score=aesthetic_score,
+                    aesthetic_weight=aesthetic_weight,
+                )
+        elif image_bytes is not None:
+            return self.__multi_img_query_raw(
+                image_inputs=image_bytes,
+                indice_name=indice_name,
+                model=model,
+                modality=modality,
+                num_images=num_images,
+                num_result_ids=num_result_ids,
+                deduplicate=deduplicate,
+                use_safety_model=use_safety_model,
+                use_violence_detector=use_violence_detector,
+                aesthetic_score=aesthetic_score,
+                aesthetic_weight=aesthetic_weight,
+            )
+        elif image_urls is not None:
+            image_inputs = image_urls
+            #ToDo add implementation for image_urls
+            return []
+        elif embeddings is not None:
+            if len(embeddings) == 1:
+                # use normal query interface
+                return self.query(
+                    embedding_input=embeddings[0],
+                    modality=modality,
+                    num_images=num_images,
+                    num_result_ids=num_result_ids,
+                    indice_name=indice_name,
+                    deduplicate=deduplicate,
+                    use_mclip=False,
+                    use_safety_model=use_safety_model,
+                    use_violence_detector=use_violence_detector,
+                    aesthetic_score=aesthetic_score,
+                    aesthetic_weight=aesthetic_weight,
+                    )
+            else:
+                # convert to batch input
+                for idx, emb in enumerate(embeddings):
                     if idx==0:
-                        queries = query
+                        queries = np.expand_dims(np.array(emb).astype("float32"), 0)
                     else:
-                        queries = np.append(queries, query, axis=0)
-
-                print("Shape of query: {0}".format(queries.shape))
-                    
-                distances_arr, indices_arr = self.knn_search(
+                        queries = np.append(queries, np.expand_dims(np.array(emb).astype("float32"), 0), axis=0)
+                print("Shape of input query: {}".format(np.shape(queries)))
+                distances, indices = self.knn_search(
                     queries,
                     modality=modality,
                     num_result_ids=num_result_ids,
-                    clip_resource=clip_resource,
+                    clip_resource=self.clip_resources[indice_name],
                     deduplicate=deduplicate,
                     use_safety_model=use_safety_model,
                     use_violence_detector=use_violence_detector,
                 )
 
                 results_arr = []
-                for idx in range(0, len(distances_arr)):
-                    if len(distances_arr[idx]) == 0 or len(indices_arr[idx]) == 0:
+                for idx in range(0, len(distances)):
+                    if len(distances[idx]) == 0 or len(indices[idx]) == 0:
                         results_arr.append([])
-                        print("For idx: {0} in raw search there is either no distance or no index returned.".format(idx))
+                        print("For idx: {} in raw search there is either no distance or no index returned.".format(idx))
                     else:
                         results = self.map_to_metadata(
-                            indices_arr[idx], distances_arr[idx], num_images, clip_resource.metadata_provider, clip_resource.columns_to_return
+                            indices[idx], 
+                            distances[idx], 
+                            num_images, 
+                            self.clip_resources[indice_name].metadata_provider,
+                            self.clip_resources[indice_name].columns_to_return
                         )
                         results_arr.append(results)
 
-                end_knn_query = time.perf_counter()
-                LOGGER.info(f'Total duration for query: {end_knn_query-start_knn_query}')
-                return results_arr
-        elif image_urls is not None:
-            image_inputs = image_urls
-            #ToDo add implementation for image_urls
-            return []
-        elif embeddings is not None:
-            image_inputs = embeddings 
-            #ToDo add implmentation for embeddings
-            return []      
-
-    def multi_query(
-        self,
-        text_input=None,
-        image_input_list=None,
-        image_url_input_list=None,
-        embedding_input_list=None,
-        modality="image",
-        num_images=100,
-        num_result_ids=100,
-        indice_name=None,
-        use_mclip=False,
-        deduplicate=True,
-        use_safety_model=False,
-        use_violence_detector=False,
-        aesthetic_score=None,
-        aesthetic_weight=None,  
-    ):
-        """
-        central interface for multiple inputs, with compatibility to single input
-        """
-        text_result = []
-        if text_input is None and image_input_list is None and image_url_input_list is None and embedding_input_list is None:
-            raise ValueError("must fill one of text, image and image url input")
-        
-        if text_input is not None and text_input != "":
-            text_result = self.query(
-                text_input=text_input,
-                modality=modality,
-                num_images=num_images,
-                num_result_ids=num_result_ids,
-                indice_name=indice_name,
-                deduplicate=deduplicate,
-                use_mclip=False,
-                use_safety_model=use_safety_model,
-                use_violence_detector=use_violence_detector,
-                aesthetic_score=aesthetic_score,
-                aesthetic_weight=aesthetic_weight,
-                )
-        elif image_input_list is not None or image_url_input_list is not None or embedding_input_list is not None:
-            pass
-
-        #return results_arr
+                return results_arr   
     
     def classifier_img_query(
         self,
@@ -1209,36 +1249,23 @@ class KnnServiceFastApi(fastResource):
     from pydantic import BaseModel
     @form_body
     class KnnPostReq(BaseModel):
-        #from typing import Union, Optional
-        image: str = None
+        # currently not support of Optional
+        query_images_list: list = None
         modality: str = "image"
         num_images: int = 1
-        embedding_input: list = None
+        query_embeddings_list: list = None
         indice_name: str 
         use_mclip: bool = False
         deduplicate: bool = False
         use_safety_model: bool = False
         use_violence_detector: bool = False
-        #api_key: str = Depends(get_api_key)
-        #class Config:
-        #    arbitrary_types_allowed = True
 
     @FULL_KNN_REQUEST_TIME.time()
-    def post(self, request: KnnPostReq = Depends(KnnPostReq)): #, api_key=Security(get_api_key)):
+    def post(self, request: KnnPostReq = Depends(KnnPostReq)):
         """implement the post method for knn service, parse the request and calls the query method"""
-        #print("Api key used: {}".format(api_key))
-        #json_data = json.loads(request.json())
-        print("Request indice_name: {}".format(request.indice_name))
-    
-        image_input = None if request.image == "None" else request.image
-        embedding_input = None if len(request.embedding_input)==1 and request.embedding_input[0]=="" else request.embedding_input
-        print("Requested image is None? :{}, requested embedding is None? : {}".format(image_input==None, embedding_input==None))
 
-        if embedding_input != None and len:
-            embedding_input = embedding_input[0][3:-3]
-            embedding_input_str_list = embedding_input.split(", ") # content is string form of string array, "[]" needs to be eliminated first
-            embedding_input_float_list = [float(number[2:-2]) for number in embedding_input_str_list] # content is again string form of string, "'xxx'"
-            embedding_input = embedding_input_float_list
+        print("Request indice_name: {}".format(request.indice_name))
+
         modality = request.modality
         num_images = request.num_images
         num_result_ids = request.num_images
@@ -1251,23 +1278,62 @@ class KnnServiceFastApi(fastResource):
         #aesthetic_score = int(aesthetic_score) if aesthetic_score != "" else None
         #aesthetic_weight = json_data.get("aesthetic_weight", "")
         #aesthetic_weight = float(aesthetic_weight) if aesthetic_weight != "" else None
+
+        #image_input = None if request.image_input == "None" else request.image_input
+        image_input = None if len(request.query_images_list)==1 and request.query_images_list[0]=="" else request.query_images_list
+        embedding_input = None if len(request.query_embeddings_list)==1 and request.query_embeddings_list[0]=="" else request.query_embeddings_list
         
-        return self.query(
-            #text_input,
-            image_input=image_input,
-            #image_url_input,
-            embedding_input=embedding_input,
-            modality=modality,
-            num_images=num_images,
-            num_result_ids=num_result_ids,
-            indice_name=indice_name,
-            use_mclip=use_mclip,
-            deduplicate=deduplicate,
-            use_safety_model=use_safety_model,
-            use_violence_detector=use_violence_detector,
-            #aesthetic_score,
-            #aesthetic_weight,
-        )
+        print("Requested image is None? :{}, requested embedding is None? : {}".format(image_input==None, embedding_input==None))
+
+        # due to usage of format "files" in request, the queried image list and queried embedding list will both always has length of 1
+        # however, in this only element, the content is string form of list
+        # to convert them back to list, first remove the [] from beginning and end, then use delimeter
+        if image_input == None and embedding_input == None:
+            print("Neither valid image input nor valid embedding input. Return empty result.")
+            return []
+        elif image_input != None:
+            image_input_list = image_input[0][1:-1].split(", ")
+            image_input = [ image[1:-1] for image in image_input_list ] # remove ' from start and ' from end
+            print("Total number of requested images: {}.".format(len(image_input_list)))
+            
+            return self.batch_query_wrapper(
+                image_bytes=image_input, # list of encoded bytes of images
+                modality=modality,
+                num_images=num_images,
+                num_result_ids=num_result_ids,
+                indice_name=indice_name,
+                deduplicate=deduplicate,
+                use_safety_model=use_safety_model,
+                use_violence_detector=use_violence_detector,
+            )
+        
+        else: # embedding_input != None:
+            print("Total number of requested embeddings: {}, first bytes of first emb: {}.".format(len(embedding_input), embedding_input[0][:20]))
+            # the request content is always a list of length 1, if the datatype is with format list
+            embedding_input = embedding_input[0][1:-1]
+            print("First bytes of first element in requested emb list: {}".format(embedding_input[:50]))
+            embedding_input_str_list = embedding_input.split("], [") # content is string form of string array, "[]" needs to be eliminated first
+            print("First bytes of first element in seperated emb string list: {}".format(embedding_input_str_list[0][:50]))
+            # content is again string form of strings. Pattern: "'xxx'" -> actual number starts from index 2
+            
+            emb_list_restructed = []
+            for str_emb_whole in embedding_input_str_list:
+                str_emb_values = str_emb_whole.replace("[", "").replace("]", "").split(", ")
+                print("total number of values: {}, and first item: {}".format(len(str_emb_values), str_emb_values[0]))
+                emb_list_restructed.append([float(number[1:-1]) for number in str_emb_values])
+            
+            print("length of emb input list: {}. length of each emb: {}, first item: {}".format(len(emb_list_restructed), len(emb_list_restructed[0]), emb_list_restructed[0][0]))
+
+            return self.batch_query_wrapper(
+                embeddings=emb_list_restructed,
+                modality=modality,
+                num_images=num_images,
+                num_result_ids=num_result_ids,
+                indice_name=indice_name,
+                deduplicate=deduplicate,
+                use_safety_model=use_safety_model,
+                use_violence_detector=use_violence_detector,
+            )
 
 class MetadataServiceFastApi(fastResource):
     """The metadata service provides metadata given indices"""
@@ -1337,7 +1403,6 @@ def clip_back_fastapi(
     clip_resources[index_folder] = clip_resource
     print("indices loaded, using key {}.".format(index_folder))
     app = FastAPI(dependencies=[Security(get_api_key)])
-    #app = FastAPI()
     api = fastApi(app)
 
     #app.add_middleware
@@ -1348,7 +1413,4 @@ def clip_back_fastapi(
     knn = KnnServiceFastApi(clip_resources=clip_resources)
     api.add_resource(knn, "/knn-service")
     return app
-    #uvicorn.run(app, port=port, host=host)
 
-if __name__ == "__main__":
-    fire.Fire(clip_back)
