@@ -24,7 +24,7 @@ class ClipBaseQuery:
             'aizip-token': 'akljnv13bvi2vfo0b0bw',
             #'Content-Type': 'application/json',
         }
-        self.__get_request("/config.json")
+        #self.__get_request("/config.json")
         self.indices = self.__get_request("/indices-list")
     
     def __get_request(self, url, headers=None):
@@ -37,7 +37,7 @@ class ClipBaseQuery:
     
     def post_request(self, url, payload, headers=None):
         """"""
-        
+        pass
     
     def get_index_name(self, indices_idx=0):
         indices_list = self.indices[indices_idx].strip().strip('["').strip('"]').split(",", -1) #.replace('\\\\','\\')
@@ -67,36 +67,29 @@ class ClipImgQuery(ClipBaseQuery):
         # todo: extend other image formats
         from pathlib import Path
         images = Path(dir).glob("*.jpg")
-        results = {}
+        print("Accept only images with .jpg format!!")
+        img_byte_list = []
         for image in images:
             # encode image bytes with b42 first
             with open(image, "rb") as img_file:
-                img_byte= self.__image_encoding(img_file.read())
-            
-            res = self.__query(
-                image_string=img_byte.decode("utf-8"),
+                img_byte_list.append(self.__image_encoding(img_file.read()))
+
+        return self.__query(
+                images_string=str(img_byte_list),
                 num_res = num_res,
                 indices_idx = indices_idx
             )
 
-            results[image] = res.json()
-        return results
-
     def query_for_single_image(self, image_url, num_res=1, indices_idx=0):
-        """"""
-        if len(self.indices) == 0:
-            if self.debug_print:
-                print("There is no valid index available on server. Return empty results.")
-            return {}
-        
+        """"""        
         if os.path.exists(image_url) == False:
             print("Given image path is not valid, no image can be loaded. Return emtpy results.")
             return {}
         with open(image_url, "rb") as image:
-            img_byte= self.__image_encoding(image.read())
+            img_byte= [self.__image_encoding(image.read())]
 
         return self.__query(
-            image_string=img_byte.decode("utf-8"),
+            images_string=str(img_byte),
             num_res = 1,
             indices_idx = indices_idx
         )
@@ -110,16 +103,16 @@ class ClipImgQuery(ClipBaseQuery):
             return None
         
     def __query(self, **kwargs):
-        assert kwargs["image_string"], f"'image_string' is not given as parameter for query in ClipImg class."
-        img_str = kwargs["image_string"]
+        assert kwargs["images_string"], f"'image_string' is not given as parameter for query in ClipImg class."
+        
         total_url = self.host + ":" + self.port + "/knn-service"
 
         indice_name_str = self.get_index_name(kwargs["indices_idx"]) if kwargs["indices_idx"] else self.get_index_name(0)
         num_res_str = str(kwargs["num_res"]) if kwargs["num_res"] else "1"
 
         payload = {
-            'image': (None, img_str),
-            'embedding_input': (None, ''),
+            'query_images_list': (None, kwargs["images_string"]),
+            'query_embeddings_list': (None, ''),
             'modality': (None, 'image'),
             'use_mclip': (None, 'false'),
             'deduplicate': (None, 'false'),
@@ -142,26 +135,35 @@ class ClipClassifierQuery(ClipBaseQuery):
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
 
-    def query_for_csv(self, csv_file, csv_idx=0, num_res=1, indices_idx=0):
+    def query_for_csv(self, csv_file, csv_idx=[0], num_res=1, indices_idx=0):        
         if os.path.exists(csv_file) == False:
            print("Given csv file doesn´t exist. Return empty result.")
            return {}
-        embeddings = self.__load_emb_from_csv(csv_file, ' ')
-        if embeddings is None:
+        csv_emb = self.__load_emb_from_csv(csv_file, ' ')
+        if csv_emb is None:
             print("No valid embeddings can be read from given .csv file.")
-        return self.query_for_single_embedding(
-            embedding=embeddings[csv_idx,:],
+            return []
+        embeddings = []
+        for idx in csv_idx:
+            if idx < csv_emb.shape[0]:
+                embeddings.append(self.__convert_emb_to_str(csv_emb[csv_idx,:]))
+        return self.__query(
+            embeddings_str=str(embeddings),
             num_res=num_res,
             indices_idx=indices_idx,
-        )
+        )        
 
     def query_for_single_embedding(self, embedding, num_res=1, indices_idx=0):
-        if len(self.indices) == 0:
-            if self.debug_print:
-                print("There is no valid index available on server. Return empty results.")
-            return {}
         return self.__query(
-            embedding_float_list = embedding,
+            embeddings_str = str([self.__convert_emb_to_str(embedding)]),
+            num_res = num_res, 
+            indices_idx = indices_idx,
+        )
+    
+    def query_for_embeddings(self, embeddings, num_res=1, indices_idx=0):
+        embeddings_list = [self.__convert_emb_to_str(embedding) for embedding in embeddings]
+        return self.__query(
+            embeddings_str = str(embeddings_list),
             num_res = num_res, 
             indices_idx = indices_idx,
         )
@@ -170,25 +172,24 @@ class ClipClassifierQuery(ClipBaseQuery):
         """"""
         return np.genfromtxt(csv_file, delimiter=sep)
 
+    def __convert_emb_to_str(self, embedding):
+        return ["%.10f" % number for number in embedding]
+
     def __query(self, **kwargs):
-        if "embedding_float_list" not in kwargs:
-            print("'embedding_float' is not given as parameter for query in ClipClassifier class.")
-            return {}
-        emb_float = kwargs["embedding_float_list"]
-        embedding_string_float = ["%.10f" % number for number in emb_float]
+        assert kwargs["embeddings_str"], f"'embeddings_str' is not given as parameter for query in ClipImg class."
         total_url = self.host + ":" + self.port + "/knn-service"
         indice_name_str = self.get_index_name(kwargs["indices_idx"]) if kwargs["indices_idx"] else self.get_index_name(0)
         num_res_str = str(kwargs["num_res"]) if kwargs["num_res"] else "1"
 
         payload = {
-            'embedding_input': (None, str(embedding_string_float)),
+            'query_embeddings_list': (None, kwargs["embeddings_str"]),
+            'query_images_list': (None, ''),
             'modality': (None, 'image'),
             'use_mclip': (None, 'false'),
             'deduplicate': (None, 'false'),
             'num_images': (None, num_res_str),
             'use_violence_detector': (None, 'false'),
             'use_safety_model': (None, 'false'),
-            'image': (None, 'None'),
             'indice_name': (None, indice_name_str),
         }
         
