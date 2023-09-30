@@ -239,15 +239,24 @@ class Hdf5MetadataProvider:
                 items[i][k] = self.ds[k][e]
         return items
 
-
-def load_index(path, enable_faiss_memory_mapping):
+import fsspec
+def load_index(path, enable_faiss_memory_mapping, load_in_gpu=False):
     if enable_faiss_memory_mapping:
         if os.path.isdir(path):
             return faiss.read_index(path + "/populated.index", faiss.IO_FLAG_ONDISK_SAME_DIR)
         else:
             return faiss.read_index(path, faiss.IO_FLAG_MMAP | faiss.IO_FLAG_READ_ONLY)
     else:
-        return faiss.read_index(path)
+        if load_in_gpu:
+            print("Loading index in gpu.")
+            with fsspec.open(path, "rb").open() as f:
+                index = faiss.read_index(faiss.PyCallbackIOReader(f.read))
+            return faiss.index_cpu_to_gpus_list(
+                    index= index,
+                    ngpu= 2,
+                )
+        else:
+            return faiss.read_index(path)
 
 
 class ArrowMetadataProvider:
@@ -548,7 +557,7 @@ def load_clip_index(clip_options):
 
     LOGGER.info("loading indices...")
     image_index = (
-        load_index(clip_options.indice_folder + "/image.index", clip_options.enable_faiss_memory_mapping)
+        load_index(clip_options.indice_folder + "/image.index", clip_options.enable_faiss_memory_mapping, False)
         if image_present
         else None
     )
