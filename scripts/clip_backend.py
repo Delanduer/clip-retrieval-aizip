@@ -1,16 +1,14 @@
-import sys
-
-#sys.path.insert(
-#    0,
-#    r'C:\Users\wjjbf\Documents\Git\clip-retrieval-aizip\aizip_clip_server_packaging\aizip_clip_server',
-#)
-
-#from aizip_clip_back import clip_back_fastapi
+#import sys
+#sys.path.insert(0, '../aizip_clip_server_packaging/aizip_clip_query')
 from aizip_clip_server import clip_back_fastapi
 
 columns = ["url", "caption", "image_path"]
+#index_parent_path = "/nfs/ssd14/projects/junjie/laion400m_index_tests/10ms" # PQ128 51G
+index_parent_path = "/home/junjie/junjie/index_factory/laion_PQ48"
+#index_parent_path = "/nfs/ssd14/projects/junjie/laion400m_index1"
+
 app = clip_back_fastapi(
-    index_folder=r"C:\\Users\\wjjbf\\Documents\\Git\\clip-retrieval-aizip\\test_index_local\\laion400m_index1",
+    index_folder=index_parent_path,
     columns_to_return=columns,
     reorder_metadata_by_ivf_index=False,
     enable_mclip_option=True,
