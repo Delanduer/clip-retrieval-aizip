@@ -240,7 +240,7 @@ class Hdf5MetadataProvider:
         return items
 
 import fsspec
-def load_index(path, enable_faiss_memory_mapping, load_in_gpu=False):
+def load_index(path, enable_faiss_memory_mapping, load_in_gpu, ngpu):
     if enable_faiss_memory_mapping:
         if os.path.isdir(path):
             return faiss.read_index(path + "/populated.index", faiss.IO_FLAG_ONDISK_SAME_DIR)
@@ -253,9 +253,10 @@ def load_index(path, enable_faiss_memory_mapping, load_in_gpu=False):
                 index = faiss.read_index(faiss.PyCallbackIOReader(f.read))
             return faiss.index_cpu_to_gpus_list(
                     index= index,
-                    ngpu= 2,
+                    ngpu= ngpu,
                 )
         else:
+            print("Loading index in cpu.")
             return faiss.read_index(path)
 
 
@@ -525,7 +526,7 @@ def load_mclip(clip_model):
     return model_txt_mclip
 
 
-def load_clip_index(clip_options):
+def load_clip_index(clip_options, load_in_gpu, ngpu):
     """load the clip index"""
     import torch  # pylint: disable=import-outside-toplevel
     from clip_retrieval.load_clip import load_clip, get_tokenizer  # pylint: disable=import-outside-toplevel
@@ -556,17 +557,19 @@ def load_clip_index(clip_options):
     text_present = os.path.exists(clip_options.indice_folder + "/text.index")
 
     LOGGER.info("loading indices...")
+
     image_index = (
-        load_index(clip_options.indice_folder + "/image.index", clip_options.enable_faiss_memory_mapping, False)
+        load_index(clip_options.indice_folder + "/image.index", clip_options.enable_faiss_memory_mapping, load_in_gpu, ngpu)
         if image_present
         else None
     )
     text_index = (
-        load_index(clip_options.indice_folder + "/text.index", clip_options.enable_faiss_memory_mapping)
+        load_index(clip_options.indice_folder + "/text.index", clip_options.enable_faiss_memory_mapping, load_in_gpu, ngpu)
         if text_present
         else None
     )
 
+    print("Index loading finished, start loading metadata.")
     LOGGER.info("loading metadata...")
 
     metadata_provider, ivf_old_to_new_mapping = load_metadata_provider(
@@ -1388,6 +1391,8 @@ def clip_back_fastapi(
     provide_safety_model=False,
     provide_violence_detector=False,
     provide_aesthetic_embeddings=True,
+    load_in_gpu=False,
+    ngpu=1,
 ):
     """main entry point of clip back, start the endpoints"""
     print("starting boot of clip back using fastapi.")
@@ -1407,6 +1412,8 @@ def clip_back_fastapi(
             provide_violence_detector=provide_violence_detector,
             provide_aesthetic_embeddings=provide_aesthetic_embeddings,
         ),
+        load_in_gpu=load_in_gpu,
+        ngpu=ngpu,
     )
     clip_resources={}
     clip_resources[index_folder] = clip_resource

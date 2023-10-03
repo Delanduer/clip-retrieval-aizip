@@ -18,6 +18,8 @@ app = clip_back_fastapi(
     provide_safety_model=False,
     provide_violence_detector=False,
     provide_aesthetic_embeddings=True,
+    load_in_gpu=True,
+    ngpu=1,
 )
 
 import uvicorn
