@@ -1,1 +1,0 @@
-from .aizip_clip_query import *
