@@ -614,15 +614,12 @@ def load_clip_indices(
     for name, indice_value in indices.items():
         # if indice_folder is a string
         if isinstance(indice_value, str):
-            #print("Indice_value is str: {}".format(indice_value))
             clip_options = dict_to_clip_options({"indice_folder": indice_value}, clip_options)
         elif isinstance(indice_value, dict):
-            #print("Indice_value is dict")
             clip_options = dict_to_clip_options(indice_value, clip_options)
         else:
             raise ValueError("Unknown type for indice_folder")
         clip_resources[name] = load_clip_index(clip_options)
-        #print("Name {0} add to clip resources".format(name))
     return clip_resources
 
 from fastapi import Depends, FastAPI, HTTPException, status, Security, Form
@@ -707,7 +704,6 @@ class KnnServiceFastApi(fastResource):
                     image_features = clip_resource.model.encode_image(prepro)
                 image_features /= image_features.norm(dim=-1, keepdim=True)
                 query = image_features.cpu().to(torch.float32).detach().numpy()
-                # print("Compute-Query returns query with shape: {}".format(query.shape))
         elif embedding_input is not None:
             query = np.expand_dims(np.array(embedding_input).astype("float32"), 0)
 
@@ -815,7 +811,6 @@ class KnnServiceFastApi(fastResource):
             ivf_old_to_new_mapping = clip_resource.ivf_old_to_new_mapping
 
         index = image_index if modality == "image" else text_index
-        #print("knn search index: {}".format(index))
 
         with KNN_INDEX_TIME.time():
             if clip_resource.metadata_is_ordered_by_ivf:
@@ -836,9 +831,7 @@ class KnnServiceFastApi(fastResource):
         
             distance_outputs = []
             indices_outputs = []
-            #print("knn search raw distances length : {}, indicies length: {}".format(len(distances), len(indices)))
             for idx in range(0, len(results)):
-                #print("Looping in raw search results for index: {}".format(idx))
                 nb_results = np.where(results[idx] == -1)[0]
 
                 if len(nb_results) > 0:
@@ -858,7 +851,6 @@ class KnnServiceFastApi(fastResource):
                     clip_resource.violence_detector,
                 )
                 indices_to_remove = set()
-                #print("knn search to be removed indices len: {}".format(len(local_indices_to_remove)))
                 for local_index in local_indices_to_remove:
                     indices_to_remove.add(result_indices[local_index])
                 indices_filtered = []
@@ -875,14 +867,12 @@ class KnnServiceFastApi(fastResource):
 
     def map_to_metadata(self, indices, distances, num_images, metadata_provider, columns_to_return):
         """map the indices to the metadata"""
-        #print("Num of imgs for meta data: {}".format(num_images))
         results = []
         with METADATA_GET_TIME.time():
             metas = metadata_provider.get(indices[:num_images], columns_to_return)
         for key, (d, i) in enumerate(zip(distances, indices)):
             output = {}
             meta = None if key + 1 > len(metas) else metas[key]
-            print("Meta for image with id {}:{}".format(i.item(), meta))
             convert_metadata_to_base64(meta)
             if meta is not None:
                 output.update(meta_to_dict(meta))
@@ -904,7 +894,6 @@ class KnnServiceFastApi(fastResource):
             for file in os.listdir(folder_path):
                 filename = os.fsdecode(file)
                 file_path = os.path.join(folder_path, filename)
-                #print("file: {0}, filename: {1}".format(file, file_path))  ## use for debug
                 if filename.rsplit(".",1)[1] in img_format:
                     with open(file_path, "rb") as img:
                         encoded_img = base64.b64encode(img.read())
@@ -1249,7 +1238,6 @@ class KnnServiceFastApi(fastResource):
         )
         if len(distances) == 0:
             return []
-        #print("len of distance: {0}, len of indices: {1}".format(len(distances), len(indices)))
         results = self.map_to_metadata(
             indices[0], distances[0], num_images, clip_resource.metadata_provider, clip_resource.columns_to_return
         )
