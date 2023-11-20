@@ -3,8 +3,8 @@
 from aizip_clip_server import clip_back_fastapi
 
 columns = ["url", "caption", "image_path"]
-#index_parent_path = "/nfs/ssd14/projects/junjie/laion400m_index_tests/10ms" # PQ128 51G
-index_parent_path = "/home/junjie/junjie/index_factory/laion_PQ48"
+index_parent_path = "/nfs/ssd14/projects/junjie/laion400m_index_tests/10ms" # PQ128 51G
+#index_parent_path = "/home/junjie/junjie/index_factory/laion_PQ48"   # PQ48 21G
 #index_parent_path = "/nfs/ssd14/projects/junjie/laion400m_index1"
 
 app = clip_back_fastapi(
@@ -18,7 +18,7 @@ app = clip_back_fastapi(
     provide_safety_model=False,
     provide_violence_detector=False,
     provide_aesthetic_embeddings=True,
-    load_in_gpu=True,
+    load_in_gpu=False,
     ngpu=1,
 )
 
@@ -26,7 +26,8 @@ import uvicorn
 uvicorn.run(
     app=app,
     #"clip_backend:app",
-    host="127.0.0.1",
+    #host="127.0.0.1",
+    host="12.12.12.13",
     port=13005,
     #reload=True,
 )
