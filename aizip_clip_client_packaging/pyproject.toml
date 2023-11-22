@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "aizip_clipretrieval_client"
+name = "Aizip_ClipRetrieval_Client"
 version = "0.1.0"
 authors = [
   { name="Junjie Wu", email="wjjbfbgss@gmail.com" },
